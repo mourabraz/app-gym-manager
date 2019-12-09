@@ -1,0 +1,9 @@
+function soma(a, b) {
+  return a + b;
+}
+
+test('it should return 9 when call soma function with 4 and 5', () => {
+  const result = soma(4, 5);
+
+  expect(result).toBe(9);
+});
