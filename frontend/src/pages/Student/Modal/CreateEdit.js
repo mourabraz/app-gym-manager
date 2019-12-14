@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from '@rocketseat/unform';
-import { differenceInYears, format } from 'date-fns';
+import { differenceInYears, format, subYears } from 'date-fns';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
@@ -23,7 +23,7 @@ const schema = Yup.object().shape({
     .required('O e-mail é obrigatório'),
   birthday: Yup.date()
     .required('A data de nascimento é obrigatória')
-    .max(new Date(), 'Somente para datas passadas'),
+    .max(subYears(new Date(), 10), 'Somente para maiores de 10 anos'),
   weight: Yup.number()
     .min(40.0, 'O Peso deve ser no mínimo de 35Kg')
     .required('O Peso é obrigatório'),
@@ -61,17 +61,19 @@ export default function CreateEdit({
   const [age, setAge] = useState(oldStudent ? oldStudent.age : null);
 
   useEffect(() => {
-    if (errorApi && errorApi.response && errorApi.response.data) {
-      if (
-        errorApi.response.data.messages[0] &&
-        errorApi.response.data.messages[0].errors[0]
-      ) {
-        toast.error(
-          `Aluno não cadastrado: ${errorApi.response.data.messages[0].errors[0]}`
-        );
+    if (errorApi) {
+      if (errorApi.response && errorApi.response.data) {
+        if (
+          errorApi.response.data.messages[0] &&
+          errorApi.response.data.messages[0].errors[0]
+        ) {
+          toast.error(
+            `Aluno não cadastrado: ${errorApi.response.data.messages[0].errors[0]}`
+          );
+        }
+      } else {
+        toast.error(`Aluno não cadastrado: ${errorApi}`);
       }
-    } else {
-      toast.error(`Aluno não cadastrado: ${errorApi}`);
     }
   }, [errorApi]);
 
@@ -90,8 +92,6 @@ export default function CreateEdit({
   }
 
   async function handleInternalSave(data) {
-    console.tron.log('handleInternalSave');
-
     try {
       data = {
         ...data,

@@ -101,8 +101,11 @@ export default function Student() {
     setIsLastPage(total + 1 <= limit);
     setTotal(total + 1);
 
+    const oldStudents = students;
+    oldStudents.pop();
+
     // TODO: Melhorar a exibição do student adicionado
-    setStudents([...students.pop(), student]);
+    setStudents([...oldStudents, student]);
   }
 
   return (
