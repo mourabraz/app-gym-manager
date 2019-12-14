@@ -6,6 +6,7 @@ import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
 } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 import api from '~/services/api';
 
@@ -108,6 +109,31 @@ export default function Student() {
     setStudents([...oldStudents, student]);
   }
 
+  async function handleDeleteStudent(student) {
+    if (
+      // eslint-disable-next-line no-alert
+      window.confirm(
+        'Tem certeza que deseja excluir o estudante?\nEsta ação é irreversível!'
+      )
+    ) {
+      try {
+        const response = await api.delete(`/students/${student.id}`);
+        if (response.data) {
+          loadStudents({ query: currentQuery });
+
+          toast.success(
+            `Aluno de nome ${student.name} foi excluído com sucesso!`
+          );
+        }
+      } catch (error) {
+        console.tron.log(error);
+        toast.error(
+          `Aluno não cadastrado: ${error.response.data.messages[0].errors[0]}`
+        );
+      }
+    }
+  }
+
   return (
     <>
       <CreateEdit
@@ -190,7 +216,9 @@ export default function Student() {
                       <button
                         className="delete-button"
                         type="button"
-                        onClick={() => {}}
+                        onClick={() => {
+                          handleDeleteStudent(s);
+                        }}
                       >
                         apagar
                       </button>
