@@ -27,11 +27,6 @@ export default async (req, res, next) => {
       .status(400)
       .json({ error: 'Validation fails', messages: error.inner });
   }
-  // await schema.validate(req.body, { abortEarly: false }).catch(error => {
-  //   return res
-  //     .status(400)
-  //     .json({ error: 'Validation fails', messages: error.inner });
-  // });
 
   const studentCount = await Student.count({
     where: { email: req.body.email },
