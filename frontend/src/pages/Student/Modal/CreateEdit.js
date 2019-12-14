@@ -1,12 +1,16 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from '@rocketseat/unform';
-import { differenceInYears } from 'date-fns';
+import { differenceInYears, format } from 'date-fns';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
+import api from '~/services/api';
+
 import DatePicker from '~/components/DatePicker';
+import InputMaskUnform from '~/components/InputMaskUnform';
 
 import { Container, ModalContent, DivBoxRow, DivBoxColumn } from './styles';
 
@@ -20,8 +24,12 @@ const schema = Yup.object().shape({
   birthday: Yup.date()
     .required('A data de nascimento é obrigatória')
     .max(new Date(), 'Somente para datas passadas'),
-  weight: Yup.number().required('O Peso é obrigatório'),
-  height: Yup.number().required('A Altura é obrigatória'),
+  weight: Yup.number()
+    .min(40.0, 'O Peso deve ser no mínimo de 35Kg')
+    .required('O Peso é obrigatório'),
+  height: Yup.number()
+    .min(1.0, 'A Altura deve ser no mínimo de 1 metro')
+    .required('A Altura é obrigatória'),
 });
 
 export default function CreateEdit({
@@ -49,11 +57,26 @@ export default function CreateEdit({
           age: null,
         }
   );
-
+  const [errorApi, setErrorApi] = useState(null);
   const [age, setAge] = useState(oldStudent ? oldStudent.age : null);
 
+  useEffect(() => {
+    if (errorApi && errorApi.response && errorApi.response.data) {
+      if (
+        errorApi.response.data.messages[0] &&
+        errorApi.response.data.messages[0].errors[0]
+      ) {
+        toast.error(
+          `Aluno não cadastrado: ${errorApi.response.data.messages[0].errors[0]}`
+        );
+      }
+    } else {
+      toast.error(`Aluno não cadastrado: ${errorApi}`);
+    }
+  }, [errorApi]);
+
   function handleInternalClose() {
-    console.tron.log('handleInternalClose');
+    // console.tron.log('handleInternalClose');
     setStudent({
       name: '',
       email: '',
@@ -66,11 +89,26 @@ export default function CreateEdit({
     handleClose();
   }
 
-  function handleInternalSave(data) {
+  async function handleInternalSave(data) {
     console.tron.log('handleInternalSave');
-    console.tron.log(data);
 
-    // handleSave();
+    try {
+      data = {
+        ...data,
+        height: data.height * 100,
+        weight: data.weight * 100,
+        birthday: format(data.birthday, 'yyyy-MM-dd'),
+      };
+
+      const response = await api.post('/students', data);
+
+      handleSave(response.data);
+
+      handleInternalClose();
+    } catch (error) {
+      console.tron.log(error);
+      setErrorApi(error);
+    }
   }
 
   function handleDatePickerChange(date) {
@@ -126,12 +164,12 @@ export default function CreateEdit({
                 <label>
                   Peso <span>(em kg)</span>
                 </label>
-                <Input type="number" min="0" step="0.01" name="weight" />
+                <InputMaskUnform name="weight" mask="999.9" type="text" />
               </DivBoxColumn>
 
               <DivBoxColumn>
                 <label>Altura</label>
-                <Input type="number" min="0" step="0.01" name="height" />
+                <InputMaskUnform name="height" mask="9.99" type="text" />
               </DivBoxColumn>
             </DivBoxRow>
           </div>

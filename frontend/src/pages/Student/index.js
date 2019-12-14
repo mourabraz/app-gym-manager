@@ -31,7 +31,7 @@ export default function Student() {
   const [total, setTotal] = useState(0);
   const [students, setStudents] = useState([]);
 
-  const [showCreateEdit, setShowCreateEdit] = useState(true);
+  const [showCreateEdit, setShowCreateEdit] = useState(false);
 
   async function loadStudents({ page = 1, query = '' } = {}) {
     const response = await api.get(
@@ -45,7 +45,7 @@ export default function Student() {
       last_page: _lastPage,
     } = response.data;
 
-    console.tron.log(`loadSturents called`, response.data);
+    // console.tron.log(`loadSturents called`, response.data);
 
     setStudents(_students);
     setTotal(_total);
@@ -98,10 +98,11 @@ export default function Student() {
     setCurrentQuery('');
     setCurrentPage(1);
     setIsFirstPage(true);
-    setIsLastPage(total + 1 > limit);
+    setIsLastPage(total + 1 <= limit);
     setTotal(total + 1);
 
-    setStudents([...students, student]);
+    // TODO: Melhorar a exibição do student adicionado
+    setStudents([...students.pop(), student]);
   }
 
   return (

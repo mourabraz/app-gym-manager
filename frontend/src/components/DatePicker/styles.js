@@ -35,6 +35,15 @@ export const Container = styled.div`
     right: 90px;
   }
 
+  .react-datepicker__current-month,
+  .react-datepicker__day-name {
+    font-size: 1rem;
+  }
+
+  .react-datepicker__day {
+    font-size: 1.2rem;
+  }
+
   > span {
     margin-left: 10px;
     font-size: 1.2rem;

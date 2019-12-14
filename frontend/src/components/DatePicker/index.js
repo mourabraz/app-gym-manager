@@ -15,14 +15,16 @@ export default function DatePicker({ onChange }) {
   const [selected, setSelected] = useState(defaultValue || new Date());
 
   useEffect(() => {
-    registerField({
-      name: 'birthday',
-      ref: ref.current,
-      path: 'props.selected',
-      clearValue: pickerRef => {
-        pickerRef.clear();
-      },
-    });
+    if (ref.current) {
+      registerField({
+        name: 'birthday',
+        ref: ref.current,
+        path: 'props.selected',
+        clearValue: pickerRef => {
+          pickerRef.clear();
+        },
+      });
+    }
   }, [ref.current]); // eslint-disable-line
 
   return (
