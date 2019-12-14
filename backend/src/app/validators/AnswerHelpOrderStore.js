@@ -7,11 +7,13 @@ export default async (req, res, next) => {
     answer: Yup.string().required(),
   });
 
-  await schema.validate(req.body, { abortEarly: false }).catch(error => {
+  try {
+    await schema.validate(req.body, { abortEarly: false });
+  } catch (error) {
     return res
       .status(400)
       .json({ error: 'Validation fails', messages: error.inner });
-  });
+  }
 
   const helpOrder = await HelpOrder.findByPk(req.params.help_order_id);
 

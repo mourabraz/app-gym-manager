@@ -16,11 +16,13 @@ export default async (req, res, next) => {
       .required(),
   });
 
-  await schema.validate(req.body, { abortEarly: false }).catch(error => {
+  try {
+    await schema.validate(req.body, { abortEarly: false });
+  } catch (error) {
     return res
       .status(400)
       .json({ error: 'Validation fails', messages: error.inner });
-  });
+  }
 
   const { student_id, plan_id, start_date } = req.body;
 

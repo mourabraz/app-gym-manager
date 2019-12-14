@@ -9,11 +9,13 @@ export default async (req, res, next) => {
     price: Yup.number().min(0),
   });
 
-  await schema.validate(req.body, { abortEarly: false }).catch(error => {
+  try {
+    await schema.validate(req.body, { abortEarly: false });
+  } catch (error) {
     return res
       .status(400)
       .json({ error: 'Validation fails', messages: error.inner });
-  });
+  }
 
   const plan = await Plan.findByPk(req.params.id);
 

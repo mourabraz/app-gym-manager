@@ -1,3 +1,4 @@
+import { subYears } from 'date-fns';
 import Student from '../models/Student';
 
 const Yup = require('yup');
@@ -15,15 +16,22 @@ export default async (req, res, next) => {
       .min(0)
       .required(),
     birthday: Yup.date()
-      .max(new Date())
+      .max(subYears(new Date(), 10))
       .required(),
   });
 
-  await schema.validate(req.body, { abortEarly: false }).catch(error => {
+  try {
+    await schema.validate(req.body, { abortEarly: false });
+  } catch (error) {
     return res
       .status(400)
       .json({ error: 'Validation fails', messages: error.inner });
-  });
+  }
+  // await schema.validate(req.body, { abortEarly: false }).catch(error => {
+  //   return res
+  //     .status(400)
+  //     .json({ error: 'Validation fails', messages: error.inner });
+  // });
 
   const studentCount = await Student.count({
     where: { email: req.body.email },

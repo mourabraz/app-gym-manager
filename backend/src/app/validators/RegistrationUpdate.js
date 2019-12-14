@@ -14,11 +14,13 @@ export default async (req, res, next) => {
     start_date: Yup.date().min(new Date()),
   });
 
-  await schema.validate(req.body, { abortEarly: false }).catch(error => {
+  try {
+    await schema.validate(req.body, { abortEarly: false });
+  } catch (error) {
     return res
       .status(400)
       .json({ error: 'Validation fails', messages: error.inner });
-  });
+  }
 
   const registration = await Registration.findByPk(req.params.id, {
     include: [
