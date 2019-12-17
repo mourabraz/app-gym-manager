@@ -6,13 +6,13 @@ import { useField } from '@rocketseat/unform';
 
 import { Container } from './styles';
 
-export default function DatePicker({ onChange }) {
+export default function DatePicker({ onChange, ...rest }) {
   registerLocale('pt', pt);
   const ref = useRef();
 
-  const { registerField, defaultValue, error } = useField('birthday');
+  const { registerField, error } = useField('birthday');
 
-  const [selected, setSelected] = useState(defaultValue || new Date());
+  const [selected, setSelected] = useState(new Date());
 
   useEffect(() => {
     if (ref.current) {
@@ -39,6 +39,7 @@ export default function DatePicker({ onChange }) {
         }}
         ref={ref}
         dateFormat="dd/MM/yyyy"
+        {...rest}
       />
       {error && <span>{error}</span>}
     </Container>

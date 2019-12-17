@@ -32,33 +32,17 @@ const schema = Yup.object().shape({
     .required('A Altura é obrigatória'),
 });
 
-export default function CreateEdit({
-  show,
-  handleClose,
-  handleSave,
-  oldStudent,
-}) {
-  const [student, setStudent] = useState(
-    oldStudent
-      ? {
-          name: oldStudent.name,
-          email: oldStudent.email,
-          birthday: oldStudent.birthday,
-          height: oldStudent.heigth,
-          weight: oldStudent.weight,
-          age: oldStudent.age,
-        }
-      : {
-          name: '',
-          email: '',
-          birthday: new Date(),
-          height: 0,
-          weight: 0,
-          age: null,
-        }
-  );
+export default function Create({ show, handleClose, handleSave }) {
+  const [student, setStudent] = useState({
+    name: '',
+    email: '',
+    birthday: new Date(),
+    height: '',
+    weight: '',
+    age: null,
+  });
   const [errorApi, setErrorApi] = useState(null);
-  const [age, setAge] = useState(oldStudent ? oldStudent.age : null);
+  const [age, setAge] = useState(null);
 
   useEffect(() => {
     if (errorApi) {
@@ -77,9 +61,8 @@ export default function CreateEdit({
     }
   }, [errorApi]);
 
-  function handleInternalClose() {
-    // console.tron.log('handleInternalClose');
-    setStudent({
+  async function handleInternalClose() {
+    await setStudent({
       name: '',
       email: '',
       birthday: new Date(),
@@ -179,14 +162,8 @@ export default function CreateEdit({
   );
 }
 
-CreateEdit.propTypes = {
-  show: PropTypes.bool,
+Create.propTypes = {
+  show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,
-  oldStudent: PropTypes.oneOfType([PropTypes.object]),
-};
-
-CreateEdit.defaultProps = {
-  show: false,
-  oldStudent: null,
 };

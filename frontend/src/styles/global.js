@@ -36,8 +36,8 @@ export default createGlobalStyle`
   html {
     font-size: 62.5%; /* 10px */
   }
-  html, body, #root {
-    height: auto;
+  html, body {
+    height: 100%;
   }
   body {
     background: linear-gradient(to bottom, var(--color-primary), var(--color-primary-light)) fixed;

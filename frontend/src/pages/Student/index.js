@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 
 import api from '~/services/api';
 
-import CreateEdit from './Modal/CreateEdit';
+import Create from './Modal/Create';
 
 import {
   Content,
@@ -22,7 +22,7 @@ import {
 } from './styles';
 
 export default function Student() {
-  const limit = 2;
+  const limit = 20;
   const timer = useRef(null);
 
   const [isFirstPage, setIsFirstPage] = useState(true);
@@ -31,8 +31,7 @@ export default function Student() {
   const [currentQuery, setCurrentQuery] = useState('');
   const [total, setTotal] = useState(0);
   const [students, setStudents] = useState([]);
-
-  const [showCreateEdit, setShowCreateEdit] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
 
   async function loadStudents({ page = 1, query = '' } = {}) {
     const response = await api.get(
@@ -87,12 +86,12 @@ export default function Student() {
     }
   }
 
-  function handleShowCreateEdit() {
-    setShowCreateEdit(true);
+  async function handleShowCreate() {
+    setShowCreate(true);
   }
 
   function handleClose() {
-    setShowCreateEdit(false);
+    setShowCreate(false);
   }
 
   function handleCreateStudent(student) {
@@ -136,8 +135,8 @@ export default function Student() {
 
   return (
     <>
-      <CreateEdit
-        show={showCreateEdit}
+      <Create
+        show={showCreate}
         handleClose={handleClose}
         handleSave={handleCreateStudent}
       />
@@ -145,7 +144,7 @@ export default function Student() {
         <Header>
           <h1>Gerenciando alunos</h1>
           <DivBoxRow>
-            <button type="button" onClick={handleShowCreateEdit}>
+            <button type="button" onClick={handleShowCreate}>
               <MdAdd color="#fff" size={20} />
               Cadastrar
             </button>
