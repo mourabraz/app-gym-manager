@@ -2,7 +2,6 @@ import { createGlobalStyle } from 'styled-components';
 import { darken, lighten } from 'polished';
 
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-perfect-scrollbar/dist/css/styles.css';
 
 export default createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
@@ -36,6 +35,7 @@ export default createGlobalStyle`
   html {
     font-size: 62.5%; /* 10px */
   }
+
   html, body {
     height: 100%;
   }
