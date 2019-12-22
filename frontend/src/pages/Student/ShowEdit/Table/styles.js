@@ -20,13 +20,18 @@ export const BoxGrid = styled.div`
   grid-template:
     [row1-start] 'month1' [row1-end]
     [row2-start] 'month1' [row2-end]
-    [row3-start] 'month2' [row3-end]
-    [row4-start] 'month2' [row4-end]
+    [row3-start] 'month1' [row3-end]
+    [row4-start] 'month1' [row4-end]
     [row5-start] 'month2' [row5-end]
-    [row6-start] 'month3' [row6-end]
-    [row7-start] 'month3' [row7-end];
-  grid-template-columns: 100px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px;
-  grid-template-rows: 40px 40px 40px 40px 40px 40px 40px;
+    [row6-start] 'month2' [row6-end]
+    [row7-start] 'month2' [row7-end]
+    [row8-start] 'month2' [row8-end]
+    [row9-start] 'month3' [row9-end]
+    [row10-start] 'month3' [row10-end]
+    [row11-start] 'month3' [row11-end]
+    [row12-start] 'month3' [row12-end];
+  grid-template-columns: 100px 40px 40px 40px 40px 40px 40px 40px;
+  grid-template-rows: 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px;
 
   .month {
     display: flex;

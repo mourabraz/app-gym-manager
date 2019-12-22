@@ -31,17 +31,23 @@ module.exports = {
 
     const checkins = [];
 
-    students.forEach(student => {
-      const total = faker.random.number({ min: 1, max: 5 });
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < total; i++) {
-        checkins.push({
-          student_id: student.student_id,
-          created_at: faker.date.between(subDays(new Date(), 7), new Date()),
-          updated_at: new Date(),
-        });
-      }
-    });
+    // eslint-disable-next-line no-plusplus
+    for (let j = 0; j < 5; j++) {
+      students.forEach(student => {
+        const total = faker.random.number({ min: 3, max: 5 });
+        // eslint-disable-next-line no-plusplus
+        for (let i = 0; i < total; i++) {
+          checkins.push({
+            student_id: student.student_id,
+            created_at: faker.date.between(
+              subDays(new Date(), (j + 1) * 7),
+              subDays(new Date(), j * 7)
+            ),
+            updated_at: new Date(),
+          });
+        }
+      });
+    }
 
     await client.end();
 
