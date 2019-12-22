@@ -23,6 +23,7 @@ export function* signIn({ payload }) {
 
     history.push('/dashboard');
   } catch (error) {
+    console.tron.error(error);
     toast.error('Authentication fails');
     yield put(signFailure());
   }

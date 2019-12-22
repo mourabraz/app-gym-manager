@@ -5,7 +5,7 @@ import { useField } from '@rocketseat/unform';
 
 import { Container } from './styles';
 
-export default function InputMaskUnform({ name, mask, ...rest }) {
+export default function InputMaskUnform({ name, ...rest }) {
   const ref = useRef();
 
   const { fieldName, registerField, defaultValue, error } = useField(name);
@@ -31,7 +31,6 @@ export default function InputMaskUnform({ name, mask, ...rest }) {
     id: fieldName,
     name: fieldName,
     'aria-label': fieldName,
-    mask,
     value,
   };
 
@@ -45,5 +44,4 @@ export default function InputMaskUnform({ name, mask, ...rest }) {
 
 InputMaskUnform.propTypes = {
   name: PropTypes.string.isRequired,
-  mask: PropTypes.string.isRequired,
 };

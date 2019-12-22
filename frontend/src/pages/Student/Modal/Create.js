@@ -24,10 +24,10 @@ const schema = Yup.object().shape({
   birthday: Yup.date()
     .required('A data de nascimento é obrigatória')
     .max(subYears(new Date(), 10), 'Somente para maiores de 10 anos'),
-  weight: Yup.number()
+  weight: Yup.string()
     .min(40.0, 'O Peso deve ser no mínimo de 35Kg')
     .required('O Peso é obrigatório'),
-  height: Yup.number()
+  height: Yup.string()
     .min(1.0, 'A Altura deve ser no mínimo de 1 metro')
     .required('A Altura é obrigatória'),
 });

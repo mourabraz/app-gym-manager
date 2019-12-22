@@ -10,9 +10,9 @@ export default function DatePicker({ onChange, ...rest }) {
   registerLocale('pt', pt);
   const ref = useRef();
 
-  const { registerField, error } = useField('birthday');
+  const { registerField, error, defaultValue } = useField('birthday');
 
-  const [selected, setSelected] = useState(new Date());
+  const [selected, setSelected] = useState(defaultValue || new Date());
 
   useEffect(() => {
     if (ref.current) {

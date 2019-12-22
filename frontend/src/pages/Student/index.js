@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import {
   MdAdd,
   MdSearch,
@@ -21,7 +22,7 @@ import {
   DivBoxRow,
 } from './styles';
 
-export default function Student() {
+export default function Student({ history, location }) {
   const limit = 20;
   const timer = useRef(null);
 
@@ -56,7 +57,12 @@ export default function Student() {
   }
 
   useEffect(() => {
-    loadStudents();
+    let _page = 1;
+    if (location.state && location.state.currentPage) {
+      _page = location.state.currentPage;
+      setCurrentPage(_page);
+    }
+    loadStudents({ page: _page });
   }, []); // eslint-disable-line
 
   function handleQueryChange(event) {
@@ -106,6 +112,8 @@ export default function Student() {
 
     // TODO: Melhorar a exibição do student adicionado
     setStudents([...oldStudents, student]);
+
+    toast.success(`Aluno cadastrado com sucesso! Nome: ${student.name}`);
   }
 
   async function handleDeleteStudent(student) {
@@ -131,6 +139,14 @@ export default function Student() {
         );
       }
     }
+  }
+
+  function handleShowEdit(student) {
+    console.tron.log('handleShowEdit', student);
+    history.push('/students/show/edit', {
+      student,
+      currentPage,
+    });
   }
 
   return (
@@ -208,7 +224,9 @@ export default function Student() {
                       <button
                         className="edit-button"
                         type="button"
-                        onClick={() => {}}
+                        onClick={() => {
+                          handleShowEdit(s);
+                        }}
                       >
                         editar
                       </button>
@@ -236,3 +254,18 @@ export default function Student() {
     </>
   );
 }
+
+Student.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      currentPage: PropTypes.string,
+    }),
+  }),
+};
+
+Student.defaultProps = {
+  location: {},
+};
