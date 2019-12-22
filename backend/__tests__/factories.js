@@ -1,5 +1,6 @@
 import faker from 'faker';
 import { factory } from 'factory-girl';
+import { subYears } from 'date-fns';
 
 import User from '../src/app/models/User';
 import Student from '../src/app/models/Student';
@@ -19,7 +20,7 @@ factory.define('Student', Student, {
   email: faker.internet.email(),
   weight: faker.random.number({ min: 5000, max: 11000 }),
   height: faker.random.number({ min: 150, max: 190 }),
-  birthday: faker.date.past(15),
+  birthday: subYears(faker.date.past(5), 10),
 });
 
 factory.define('Plan', Plan, {

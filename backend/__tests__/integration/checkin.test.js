@@ -160,14 +160,72 @@ describe('Checkin', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({
-      page: 1,
-      last_page: 1,
+      page: null,
+      last_page: null,
       total: 3,
       checkins: [
         {
           id: expect.any(Number),
           student_id: student1.id,
         },
+        {
+          id: expect.any(Number),
+          student_id: student1.id,
+        },
+        {
+          id: expect.any(Number),
+          student_id: student1.id,
+        },
+      ],
+    });
+  });
+
+  it('should return a list of checkins for a specific student with pages', async () => {
+    const student1 = await factory.create('Student', {
+      email: 'student1@student.com',
+    });
+    await factory.create('Registration', {
+      start_date: subMonths(today, 1),
+      end_date: addMonths(today, 1),
+      student_id: student1.id,
+    });
+
+    const student2 = await factory.create('Student', {
+      email: 'student2@student.com',
+    });
+    await factory.create('Registration', {
+      start_date: subMonths(today, 1),
+      end_date: addMonths(today, 1),
+      student_id: student2.id,
+    });
+
+    await factory.create('Checkin', {
+      student_id: student1.id,
+    });
+    await factory.create('Checkin', {
+      student_id: student1.id,
+    });
+    await factory.create('Checkin', {
+      student_id: student1.id,
+    });
+
+    await factory.create('Checkin', {
+      student_id: student2.id,
+    });
+    await factory.create('Checkin', {
+      student_id: student2.id,
+    });
+
+    const response = await request(app)
+      .get(`/students/${student1.id}/checkins?limit=2`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      page: 1,
+      last_page: 2,
+      total: 3,
+      checkins: [
         {
           id: expect.any(Number),
           student_id: student1.id,
