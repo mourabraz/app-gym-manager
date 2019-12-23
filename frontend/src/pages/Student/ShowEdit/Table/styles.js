@@ -10,6 +10,12 @@ export const Container = styled.div`
   h2 {
     align-self: flex-start;
     margin-bottom: 15px;
+
+    span {
+      font-size: 1.4rem;
+      font-weight: normal;
+      margin-left: 15px;
+    }
   }
 `;
 
@@ -53,7 +59,7 @@ export const BoxGrid = styled.div`
 `;
 
 export const Day = styled.div`
-  /* position: relative; */
+  position: relative;
   background: white;
   border: solid 1px rgba(0, 0, 0, 0.3);
   font-size: 1rem;
@@ -64,6 +70,43 @@ export const Day = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  &:hover {
+    div:first-child {
+      display: block;
+    }
+  }
+`;
+
+export const DayPopover = styled.div`
+  display: none;
+  position: absolute;
+  width: 100px;
+  left: 50%;
+  top: calc(-100% - 10px);
+  background: var(--color-primary);
+  border-radius: 4px;
+  padding: 5px;
+  z-index: 100;
+  border: solid 1px var(--color-primary);
+  color: white;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--color-primary);
+  }
+
+  span {
+    display: block;
+    line-height: 2;
+  }
 `;
 
 export const CheckinInfo = styled.div`
@@ -74,7 +117,7 @@ export const CheckinInfo = styled.div`
   align-items: center;
 
   ${props =>
-    props.hasCheckins.map(
+    props.checkins.map(
       () => css`
         &::after {
           width: 8px;
