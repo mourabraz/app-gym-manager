@@ -64,9 +64,9 @@ export default function Notifications() {
         isEmpty={!notifications.length}
       >
         {notifications.length ? (
-          <MdNotifications color="#eee" size={20} />
+          <MdNotifications color="#EE4D64" size={20} />
         ) : (
-          <MdNotificationsOff color="#eee" size={20} />
+          <MdNotificationsOff color="#EE4D64" size={20} />
         )}
       </Badge>
 

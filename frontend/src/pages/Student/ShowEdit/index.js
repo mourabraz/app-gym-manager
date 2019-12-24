@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from '@rocketseat/unform';
-import { parseISO, differenceInYears, format, subYears } from 'date-fns';
+import { parseISO, differenceInYears, subYears } from 'date-fns';
 import { MdDone, MdEdit, MdKeyboardArrowLeft } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';

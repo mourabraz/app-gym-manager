@@ -58,14 +58,19 @@ export default function Student({ history, location }) {
       last_page: _lastPage,
     } = response.data;
 
-    // console.tron.log(`loadSturents called`, response.data);
+    // console.tron.log(
+    //   `loadSturents called`,
+    //   _students,
+    //   _page,
+    //   _total,
+    //   _lastPage
+    // );
+    setIsFirstPage(Number(page) === 1);
+    setIsLastPage(Number(page) === _lastPage);
 
     setStudents(_students);
     setTotal(_total);
     setCurrentPage(_page);
-
-    setIsFirstPage(page === 1);
-    setIsLastPage(page === _lastPage);
   }
 
   useEffect(() => {
@@ -92,7 +97,13 @@ export default function Student({ history, location }) {
     if (!isFirstPage) {
       const page = Number(currentPage) - 1;
       setCurrentPage(page);
-      loadStudents({ page, query: currentQuery });
+      loadStudents({
+        page,
+        query: currentQuery,
+        name: nameOrder,
+        email: emailOrder,
+        birthday: birthdayOrder,
+      });
     }
   }
 
@@ -100,7 +111,13 @@ export default function Student({ history, location }) {
     if (!isLastPage) {
       const page = Number(currentPage) + 1;
       setCurrentPage(page);
-      loadStudents({ page, query: currentQuery });
+      loadStudents({
+        page,
+        query: currentQuery,
+        name: nameOrder,
+        email: emailOrder,
+        birthday: birthdayOrder,
+      });
     }
   }
 
@@ -118,6 +135,9 @@ export default function Student({ history, location }) {
     setIsFirstPage(true);
     setIsLastPage(total + 1 <= limit);
     setTotal(total + 1);
+    setNameOrder('');
+    setEmailOrder('');
+    setBirthdayOrder('');
 
     const oldStudents = students;
     oldStudents.pop();

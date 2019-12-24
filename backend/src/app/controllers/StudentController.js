@@ -4,7 +4,30 @@ import Student from '../models/Student';
 
 class StudentController {
   async index(req, res) {
-    const { q: query = '', page = 1, limit = 10 } = req.query;
+    const {
+      q: query = '',
+      page = 1,
+      limit = 10,
+      name = '',
+      email = '',
+      birthday = '',
+    } = req.query;
+
+    console.log(`name: ${name}`, `email: ${email}`, `brithday: ${birthday}`);
+
+    const order = [];
+    if (name) {
+      order.push(['name', name]);
+    }
+    if (email) {
+      order.push(['email', email]);
+    }
+    if (birthday) {
+      order.push(['birthday', birthday]);
+    }
+    if (!order.length) {
+      order.push(['name', 'asc']);
+    }
 
     const data = await Student.findAndCountAll({
       where: {
@@ -12,7 +35,7 @@ class StudentController {
           [Op.like]: `%${query}%`,
         },
       },
-      order: [['name', 'asc']],
+      order,
       limit,
       offset: (page - 1) * limit,
     });

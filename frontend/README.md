@@ -18,7 +18,7 @@ O frontend utiliza a API do Gympoint ([pasta backend](../backend))
 
 - SigIn: para autenticação do usuário;
 - Dashboard: páginal inicial;
-- Alunos: páginal inicial;
+- Alunos: página que lista os Alunos da academia com paginação e ordenação pelo nome, email ou idade;
 - Planos: páginal inicial;
 - Matrículas: páginal inicial;
 - Pedidos de auxílio: páginal inicial;
@@ -27,13 +27,13 @@ O frontend utiliza a API do Gympoint ([pasta backend](../backend))
 - Visualização/Edição: Visualiza dados do aluno e possibilita a edição do cadastro.
 
 <p align="center" style="margin: 25px 0">
-  <img style="display: inline-block; margin: 0 10px" width="300" height="300" src="./meetapp/signin.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" height="300" src="./meetapp/signup.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" height="300" src="./meetapp/dashboard.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" height="300" src="./meetapp/showMeetup.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" height="300" src="./meetapp/createMeetup.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" height="300" src="./meetapp/editMeetup.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" height="300" src="./meetapp/profile.png">
+  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/login_blank.png">
+  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/login_error.png">
+  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/alunos_list.png">
+  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/alunos_cadastro.png">
+  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/alunos_cadastro_error.png">
+  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/alunos_edit-view.png">
+  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/profile.png">
 </p>
 
  - O cadastro de alunos foi implementado usando um modal, enquanto a edição de um aluno abre uma nova página. Esta página de edição recebe os dados do estudante pela rota, enquanto realiza uma busca à API para apresentar dados extras sobre o aluno. A opção de passar o aluno no state da rota teve como objetivo o treino.
