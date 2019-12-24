@@ -83,7 +83,7 @@ export const DayPopover = styled.div`
   position: absolute;
   width: 100px;
   left: 50%;
-  top: calc(-100% - 10px);
+  bottom: 40px; /* calc(100%);*/
   background: var(--color-primary);
   border-radius: 4px;
   padding: 5px;

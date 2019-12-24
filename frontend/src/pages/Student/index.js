@@ -6,6 +6,8 @@ import {
   MdSearch,
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
+  MdArrowDownward,
+  MdArrowUpward,
 } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
@@ -34,9 +36,19 @@ export default function Student({ history, location }) {
   const [students, setStudents] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
 
-  async function loadStudents({ page = 1, query = '' } = {}) {
+  const [nameOrder, setNameOrder] = useState('asc');
+  const [emailOrder, setEmailOrder] = useState('');
+  const [birthdayOrder, setBirthdayOrder] = useState('');
+
+  async function loadStudents({
+    page = 1,
+    query = '',
+    name = 'asc',
+    email = '',
+    birthday = '',
+  } = {}) {
     const response = await api.get(
-      `/students?page=${page}&limit=${limit}&q=${query}`
+      `/students?page=${page}&limit=${limit}&q=${query}&name=${name}&email=${email}&birthday=${birthday}`
     );
 
     const {
@@ -59,7 +71,7 @@ export default function Student({ history, location }) {
   useEffect(() => {
     let _page = 1;
     if (location.state && location.state.currentPage) {
-      _page = location.state.currentPage;
+      _page = Number(location.state.currentPage);
       setCurrentPage(_page);
     }
     loadStudents({ page: _page });
@@ -149,6 +161,57 @@ export default function Student({ history, location }) {
     });
   }
 
+  function handleSortOrder(field, order) {
+    let tempNameOrder = nameOrder;
+    let tempEmailOrder = emailOrder;
+    let tempBirthdayOrder = birthdayOrder;
+
+    if (field === 'name') {
+      if (order === tempNameOrder) {
+        setNameOrder('');
+        tempNameOrder = '';
+      } else if (order === 'asc') {
+        setNameOrder('asc');
+        tempNameOrder = 'asc';
+      } else {
+        setNameOrder('desc');
+        tempNameOrder = 'desc';
+      }
+    }
+    if (field === 'email') {
+      if (order === tempEmailOrder) {
+        setEmailOrder('');
+        tempEmailOrder = '';
+      } else if (order === 'asc') {
+        setEmailOrder('asc');
+        tempEmailOrder = 'asc';
+      } else {
+        setEmailOrder('desc');
+        tempEmailOrder = 'desc';
+      }
+    }
+    if (field === 'birthday') {
+      if (order === tempBirthdayOrder) {
+        setBirthdayOrder('');
+        tempBirthdayOrder = '';
+      } else if (order === 'asc') {
+        setBirthdayOrder('asc');
+        tempBirthdayOrder = 'asc';
+      } else {
+        setBirthdayOrder('desc');
+        tempBirthdayOrder = 'desc';
+      }
+    }
+
+    loadStudents({
+      page: currentPage,
+      query: currentQuery,
+      name: tempNameOrder,
+      email: tempEmailOrder,
+      birthday: tempBirthdayOrder,
+    });
+  }
+
   return (
     <>
       <Create
@@ -206,11 +269,45 @@ export default function Student({ history, location }) {
             <table>
               <thead>
                 <tr>
-                  <th className="text-left">Nome</th>
+                  <th className="text-left">
+                    <MdArrowUpward
+                      color={nameOrder === 'desc' ? '#000' : '#ccc'}
+                      size={20}
+                      onClick={() => handleSortOrder('name', 'desc')}
+                    />
+                    <MdArrowDownward
+                      color={nameOrder === 'asc' ? '#000' : '#ccc'}
+                      size={20}
+                      onClick={() => handleSortOrder('name', 'asc')}
+                    />
+                    Nome
+                  </th>
                   <th width="250" className="text-left">
+                    <MdArrowUpward
+                      color={emailOrder === 'desc' ? '#000' : '#ccc'}
+                      size={20}
+                      onClick={() => handleSortOrder('email', 'desc')}
+                    />
+                    <MdArrowDownward
+                      color={emailOrder === 'asc' ? '#000' : '#ccc'}
+                      size={20}
+                      onClick={() => handleSortOrder('email', 'asc')}
+                    />
                     E-mail
                   </th>
-                  <th width="100">Idade</th>
+                  <th width="100">
+                    <MdArrowUpward
+                      color={birthdayOrder === 'desc' ? '#000' : '#ccc'}
+                      size={20}
+                      onClick={() => handleSortOrder('birthday', 'desc')}
+                    />
+                    <MdArrowDownward
+                      color={birthdayOrder === 'asc' ? '#000' : '#ccc'}
+                      size={20}
+                      onClick={() => handleSortOrder('birthday', 'asc')}
+                    />
+                    Idade
+                  </th>
                   <th width="100" />
                 </tr>
               </thead>

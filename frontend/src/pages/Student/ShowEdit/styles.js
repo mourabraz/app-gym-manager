@@ -54,6 +54,14 @@ export const Container = styled.div`
             background: var(--text-color-dark);
           }
         }
+
+        button.edit {
+          background: var(--text-color-light);
+
+          &:hover {
+            background: var(--text-color-dark);
+          }
+        }
       }
     }
 

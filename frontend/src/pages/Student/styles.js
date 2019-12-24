@@ -71,9 +71,18 @@ export const TableBox = styled.div`
     }
 
     th {
-      padding: 5px 10px;
+      padding: 5px;
       text-transform: uppercase;
       font-weight: bold;
+
+      svg {
+        padding-top: 6px;
+        cursor: pointer;
+
+        + svg {
+          margin-right: 6px;
+        }
+      }
     }
 
     td {

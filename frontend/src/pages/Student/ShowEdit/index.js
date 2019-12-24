@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from '@rocketseat/unform';
 import { parseISO, differenceInYears, format, subYears } from 'date-fns';
-import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
+import { MdDone, MdEdit, MdKeyboardArrowLeft } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
@@ -34,16 +34,17 @@ const schema = Yup.object().shape({
 });
 
 export default function ShowEdit({ history, location }) {
-  const student = {
+  const [student, setStudent] = useState({
     ...location.state.student,
     birthday: parseISO(location.state.student.birthday),
     height: Number(location.state.student.height / 100).toFixed(2),
     weight: `00${Number(location.state.student.weight / 100).toFixed(
       2
     )}`.substr(-6),
-  };
+  });
 
   const [age, setAge] = useState(student.age);
+  const [editMode, setEditMode] = useState(false);
 
   function handleDatePickerChange(date) {
     setAge(differenceInYears(new Date(), date));
@@ -53,7 +54,39 @@ export default function ShowEdit({ history, location }) {
     history.push('/students', { currentPage: location.state.currentPage });
   }
 
-  function handleSubmit() {}
+  async function handleSubmit({ name, email, birthday, weight, height }) {
+    if (editMode) {
+      height = (height * 100).toFixed(0);
+      weight = (weight * 100).toFixed(0);
+
+      try {
+        const response = await api.put(`/students/${student.id}`, {
+          name,
+          email,
+          birthday,
+          weight,
+          height,
+        });
+
+        setStudent(response.data);
+      } catch (error) {
+        console.tron.error(error);
+        toast.error('Erro ao editar o Aluno');
+      }
+
+      setEditMode(false);
+
+      console.tron.log('handleSubmit', {
+        name,
+        email,
+        birthday,
+        weight,
+        height,
+      });
+    } else {
+      setEditMode(true);
+    }
+  }
 
   return (
     <Container>
@@ -71,10 +104,17 @@ export default function ShowEdit({ history, location }) {
               Voltar
             </button>
 
-            <button type="submit" className="save">
-              <MdDone color="#fff" size={16} />
-              Salvar
-            </button>
+            {editMode ? (
+              <button type="submit" className="save">
+                <MdDone color="#fff" size={16} />
+                Salvar
+              </button>
+            ) : (
+              <button type="submit" className="edit">
+                <MdEdit color="#fff" size={16} />
+                Editar
+              </button>
+            )}
           </div>
         </header>
 
@@ -82,10 +122,20 @@ export default function ShowEdit({ history, location }) {
 
         <div className="content">
           <label>Nome Completo</label>
-          <Input type="text" name="name" placeholder="John Doe" />
+          <Input
+            type="text"
+            name="name"
+            placeholder="John Doe"
+            disabled={editMode ? 0 : 1}
+          />
 
           <label>Endereço de e-mail</label>
-          <Input type="email" name="email" placeholder="exemplo@email.com" />
+          <Input
+            type="email"
+            name="email"
+            placeholder="exemplo@email.com"
+            disabled={editMode ? 0 : 1}
+          />
 
           <DivBoxRow>
             <DivBoxColumn>
@@ -96,6 +146,7 @@ export default function ShowEdit({ history, location }) {
                 name="birthday"
                 defaultValue={student.birthday}
                 onChange={handleDatePickerChange}
+                disabled={editMode ? 0 : 1}
               />
             </DivBoxColumn>
 
@@ -103,12 +154,22 @@ export default function ShowEdit({ history, location }) {
               <label>
                 Peso <span>(em kg)</span>
               </label>
-              <InputMaskUnform name="weight" mask="999.9" type="text" />
+              <InputMaskUnform
+                name="weight"
+                mask="999.9"
+                type="text"
+                disabled={editMode ? 0 : 1}
+              />
             </DivBoxColumn>
 
             <DivBoxColumn>
               <label>Altura</label>
-              <InputMaskUnform name="height" mask="9.99" type="text" />
+              <InputMaskUnform
+                name="height"
+                mask="9.99"
+                type="text"
+                disabled={editMode ? 0 : 1}
+              />
             </DivBoxColumn>
           </DivBoxRow>
         </div>

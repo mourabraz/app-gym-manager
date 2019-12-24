@@ -90,7 +90,7 @@ export default function CheckInsTable({ studentId }) {
               {item.checkins.length ? (
                 <DayPopover>
                   {item.checkins.map((time, index) => (
-                    <span>
+                    <span key={time.formatted}>
                       {index + 1}º às {time.formatted}
                     </span>
                   ))}
