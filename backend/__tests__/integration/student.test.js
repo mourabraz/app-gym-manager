@@ -445,4 +445,139 @@ describe('Student', () => {
       students: [{ name: 'Student 1' }, { name: 'Student 2' }],
     });
   });
+
+  it('should return a list of students order by name', async () => {
+    const token = jwt.sign({ id: user.id }, authConfig.secret, {
+      expiresIn: authConfig.expiresIn,
+    });
+
+    await factory.create('Student', {
+      name: 'Student 1',
+      email: 'student1@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+    await factory.create('Student', {
+      name: 'Student 2',
+      email: 'student2@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+    await factory.create('Student', {
+      name: 'Student 3',
+      email: 'student3@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+
+    const response = await request(app)
+      .get('/students?name=desc')
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      total: 3,
+      page: 1,
+      last_page: 1,
+      students: [
+        { name: 'Student 3' },
+        { name: 'Student 2' },
+        { name: 'Student 1' },
+      ],
+    });
+  });
+
+  it('should return a list of students order by email', async () => {
+    const token = jwt.sign({ id: user.id }, authConfig.secret, {
+      expiresIn: authConfig.expiresIn,
+    });
+
+    await factory.create('Student', {
+      name: 'Student 1',
+      email: 'student1@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+    await factory.create('Student', {
+      name: 'Student 2',
+      email: 'student2@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+    await factory.create('Student', {
+      name: 'Student 3',
+      email: 'student3@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+
+    const response = await request(app)
+      .get('/students?email=desc')
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      total: 3,
+      page: 1,
+      last_page: 1,
+      students: [
+        { name: 'Student 3' },
+        { name: 'Student 2' },
+        { name: 'Student 1' },
+      ],
+    });
+  });
+
+  it('should return a list of students order by birthday', async () => {
+    const token = jwt.sign({ id: user.id }, authConfig.secret, {
+      expiresIn: authConfig.expiresIn,
+    });
+
+    await factory.create('Student', {
+      name: 'Student 1',
+      email: 'student1@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+    await factory.create('Student', {
+      name: 'Student 2',
+      email: 'student2@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+    await factory.create('Student', {
+      name: 'Student 3',
+      email: 'student3@student.com',
+      weight: 50,
+      height: 168,
+      birthday: new Date(),
+    });
+
+    const response = await request(app)
+      .get('/students?birthday=desc')
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      total: 3,
+      page: 1,
+      last_page: 1,
+      students: [
+        { name: 'Student 3' },
+        { name: 'Student 2' },
+        { name: 'Student 1' },
+      ],
+    });
+  });
 });
