@@ -13,8 +13,6 @@ class StudentController {
       birthday = '',
     } = req.query;
 
-    console.log(`name: ${name}`, `email: ${email}`, `brithday: ${birthday}`);
-
     const order = [];
     if (name) {
       order.push(['name', name]);

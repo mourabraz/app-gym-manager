@@ -8,6 +8,7 @@ import CheckinController from './app/controllers/CheckinController';
 import HelpOrderController from './app/controllers/HelpOrderController';
 import AnswerHelpOrderController from './app/controllers/AnswerHelpOrderController';
 import StudentHelpOrderController from './app/controllers/StudentHelpOrderController';
+import DashboardCheckinsController from './app/controllers/DashboardCheckinsController';
 
 import validateSessionStore from './app/validators/SessionStore';
 import validateStudentStore from './app/validators/StudentStore';
@@ -58,6 +59,8 @@ routes.use(authMiddleware);
 /*
  * PRIVATE ROUTES
  */
+routes.get('/dashboard/checkins', DashboardCheckinsController.index);
+
 routes.get('/students', StudentController.index);
 routes.post('/students', validateStudentStore, StudentController.store);
 routes.put('/students/:id', validateStudentUpdate, StudentController.update);
