@@ -8,7 +8,9 @@ import CheckinController from './app/controllers/CheckinController';
 import HelpOrderController from './app/controllers/HelpOrderController';
 import AnswerHelpOrderController from './app/controllers/AnswerHelpOrderController';
 import StudentHelpOrderController from './app/controllers/StudentHelpOrderController';
-import DashboardCheckinsController from './app/controllers/DashboardCheckinsController';
+import DashboardCheckinsByDayController from './app/controllers/DashboardCheckinsByDayController';
+import DashboardCheckinsByHourController from './app/controllers/DashboardCheckinsByHourController';
+import DashboardBirthdaysController from './app/controllers/DashboardBirthdaysController';
 
 import validateSessionStore from './app/validators/SessionStore';
 import validateStudentStore from './app/validators/StudentStore';
@@ -59,7 +61,9 @@ routes.use(authMiddleware);
 /*
  * PRIVATE ROUTES
  */
-routes.get('/dashboard/checkins', DashboardCheckinsController.index);
+routes.get('/dashboard/checkins/day', DashboardCheckinsByDayController.index);
+routes.get('/dashboard/checkins/hour', DashboardCheckinsByHourController.index);
+routes.get('/dashboard/birthdays', DashboardBirthdaysController.index);
 
 routes.get('/students', StudentController.index);
 routes.post('/students', validateStudentStore, StudentController.store);

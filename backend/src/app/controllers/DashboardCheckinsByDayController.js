@@ -3,7 +3,7 @@ import { subDays, startOfDay, endOfDay, parseISO } from 'date-fns';
 
 import Checkin from '../models/Checkin';
 
-class DashboardCheckinsController {
+class DashboardCheckinsByDayController {
   async index(req, res) {
     const { start_date, end_date } = req.query;
 
@@ -30,4 +30,4 @@ class DashboardCheckinsController {
   }
 }
 
-export default new DashboardCheckinsController();
+export default new DashboardCheckinsByDayController();
