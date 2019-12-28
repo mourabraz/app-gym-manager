@@ -5,7 +5,7 @@ import { useField } from '@rocketseat/unform';
 
 import { Container } from './styles';
 
-export default function InputMaskUnform({ name, ...rest }) {
+export default function InputMaskUnform({ name, onChange, ...rest }) {
   const ref = useRef();
 
   const { fieldName, registerField, defaultValue, error } = useField(name);
@@ -36,7 +36,13 @@ export default function InputMaskUnform({ name, ...rest }) {
 
   return (
     <Container>
-      <InputMask {...props} onChange={e => setValue(e.target.value)} />
+      <InputMask
+        {...props}
+        onChange={e => {
+          setValue(e.target.value);
+          onChange(e);
+        }}
+      />
       {error && <span>{error}</span>}
     </Container>
   );
@@ -44,4 +50,9 @@ export default function InputMaskUnform({ name, ...rest }) {
 
 InputMaskUnform.propTypes = {
   name: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+};
+
+InputMaskUnform.defaultProps = {
+  onChange: () => {},
 };

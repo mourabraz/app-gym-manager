@@ -140,7 +140,9 @@ export default function Student({ history, location }) {
     setBirthdayOrder('');
 
     const oldStudents = students;
-    oldStudents.pop();
+    if (oldStudents.length >= limit) {
+      oldStudents.pop();
+    }
 
     // TODO: Melhorar a exibição do student adicionado
     setStudents([...oldStudents, student]);
