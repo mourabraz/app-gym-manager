@@ -29,7 +29,7 @@ describe('Checkin', () => {
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({
       id: expect.any(Number),
-      student_id: String(student.id),
+      student_id: student.id,
     });
   });
 

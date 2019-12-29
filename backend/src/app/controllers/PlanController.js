@@ -1,10 +1,48 @@
+import { Op } from 'sequelize';
 import Plan from '../models/Plan';
 
 class PlanController {
   async index(req, res) {
-    const plans = await Plan.findAll();
+    const {
+      q: query = '',
+      page = 1,
+      limit = 10,
+      title = '',
+      duration = '',
+      price = '',
+    } = req.query;
 
-    return res.json(plans);
+    const order = [];
+    if (title) {
+      order.push(['title', title]);
+    }
+    if (duration) {
+      order.push(['duration', duration]);
+    }
+    if (price) {
+      order.push(['price', price]);
+    }
+    if (!order.length) {
+      order.push(['title', 'asc']);
+    }
+
+    const data = await Plan.findAndCountAll({
+      where: {
+        title: {
+          [Op.like]: `%${query}%`,
+        },
+      },
+      order,
+      limit,
+      offset: (page - 1) * limit,
+    });
+
+    return res.json({
+      plans: data.rows,
+      page,
+      last_page: Math.ceil(data.count / limit),
+      total: data.count,
+    });
   }
 
   async store(req, res) {

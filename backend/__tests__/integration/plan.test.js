@@ -348,10 +348,80 @@ describe('Plan', () => {
       .send();
 
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject([
-      { title: 'plan 1' },
-      { title: 'plan 2' },
-      { title: 'plan 3' },
-    ]);
+    expect(response.body).toMatchObject({
+      total: 3,
+      page: 1,
+      last_page: 1,
+      plans: [{ title: 'plan 1' }, { title: 'plan 2' }, { title: 'plan 3' }],
+    });
+  });
+
+  it('should return a list of plans order by title', async () => {
+    const token = jwt.sign({ id: user.id }, authConfig.secret, {
+      expiresIn: authConfig.expiresIn,
+    });
+
+    await factory.create('Plan', { title: 'plan 1' });
+    await factory.create('Plan', { title: 'plan 2' });
+    await factory.create('Plan', { title: 'plan 3' });
+
+    const response = await request(app)
+      .get('/plans?title=asc')
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      total: 3,
+      page: 1,
+      last_page: 1,
+      plans: [{ title: 'plan 1' }, { title: 'plan 2' }, { title: 'plan 3' }],
+    });
+  });
+
+  it('should return a list of plans order by duration', async () => {
+    const token = jwt.sign({ id: user.id }, authConfig.secret, {
+      expiresIn: authConfig.expiresIn,
+    });
+
+    await factory.create('Plan', { title: 'plan 1', duration: 1 });
+    await factory.create('Plan', { title: 'plan 2', duration: 2 });
+    await factory.create('Plan', { title: 'plan 3', duration: 3 });
+
+    const response = await request(app)
+      .get('/plans?duration=asc')
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      total: 3,
+      page: 1,
+      last_page: 1,
+      plans: [{ title: 'plan 1' }, { title: 'plan 2' }, { title: 'plan 3' }],
+    });
+  });
+
+  it('should return a list of plans order by price', async () => {
+    const token = jwt.sign({ id: user.id }, authConfig.secret, {
+      expiresIn: authConfig.expiresIn,
+    });
+
+    await factory.create('Plan', { title: 'plan 1', price: 100 });
+    await factory.create('Plan', { title: 'plan 2', price: 200 });
+    await factory.create('Plan', { title: 'plan 3', price: 300 });
+
+    const response = await request(app)
+      .get('/plans?price=asc')
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      total: 3,
+      page: 1,
+      last_page: 1,
+      plans: [{ title: 'plan 1' }, { title: 'plan 2' }, { title: 'plan 3' }],
+    });
   });
 });

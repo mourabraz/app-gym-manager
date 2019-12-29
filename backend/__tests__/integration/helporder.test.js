@@ -184,7 +184,7 @@ describe('HelpOrder', () => {
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({
       id: expect.any(Number),
-      student_id: String(student.id),
+      student_id: student.id,
       question: 'How to improve my academy system?',
       updatedAt: expect.stringMatching(
         /[0-9]{4}-[0-9]{2}-[0-9]{2}T([0-9]{2}:){2}[0-9]{2}\.[0-9]{3}Z/
