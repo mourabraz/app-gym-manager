@@ -24,7 +24,7 @@ const schema = Yup.object().shape({
     .required('O preço é obrigatório'),
 });
 
-export default function Create({ show, handleClose, handleSave }) {
+export default function Create({ handleClose, handleSave }) {
   const [plan, setPlan] = useState({
     title: '',
     duration: 0,
@@ -89,8 +89,8 @@ export default function Create({ show, handleClose, handleSave }) {
   }
 
   return (
-    <Container className="modal" show={show ? 1 : 0}>
-      <ModalContent className="modal">
+    <Container>
+      <ModalContent>
         <Form
           schema={schema}
           initialData={plan}
@@ -156,7 +156,6 @@ export default function Create({ show, handleClose, handleSave }) {
 }
 
 Create.propTypes = {
-  show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,
 };

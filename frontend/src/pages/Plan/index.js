@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect, useRef } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
 import {
   MdAdd,
@@ -229,11 +230,14 @@ export default function Plan({ history, location }) {
 
   return (
     <>
-      <Create
-        show={showCreate}
-        handleClose={handleClose}
-        handleSave={handleCreatePlan}
-      />
+      <TransitionGroup component={null}>
+        {showCreate && (
+          <CSSTransition classNames="dialog" timeout={300}>
+            <Create handleClose={handleClose} handleSave={handleCreatePlan} />
+          </CSSTransition>
+        )}
+      </TransitionGroup>
+
       <Content>
         <Header>
           <h1>Gerenciando planos</h1>

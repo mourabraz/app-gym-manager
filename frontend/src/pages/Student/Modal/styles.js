@@ -1,129 +1,113 @@
-import styled, { keyframes } from 'styled-components';
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
+import styled from 'styled-components';
 
 export const Container = styled.div`
-  &.modal {
-    display: ${props => (props.show ? 'block' : 'none')};
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    overflow: auto;
-    background: rgb(0, 0, 0);
-    background: rgba(0, 0, 0, 0.6);
-
-    animation: ${fadeIn} 0.3s linear;
-  }
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.6);
 `;
 
 export const ModalContent = styled.section`
-  &.modal {
-    position: relative;
-    background: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 4px;
-    width: 80%;
-    max-width: 700px;
-    height: auto;
+  position: relative;
+  background: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  width: 80%;
+  max-width: 700px;
+  height: auto;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    form {
-      padding: 0;
+  form {
+    padding: 0;
 
-      header {
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h1 {
+        font-size: 2.4rem;
+      }
+
+      .buttons {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
 
-        h1 {
-          font-size: 2.4rem;
-        }
+        button {
+          svg {
+            margin-right: 10px;
+          }
 
-        .buttons {
+          border: 0;
+          padding: 0 10px;
+          margin-left: 10px;
+          border-radius: 4px;
+          color: #fff;
+          font-size: 1.2rem;
           display: flex;
           justify-content: center;
           align-items: center;
+          height: 36px;
+        }
 
-          button {
-            svg {
-              margin-right: 10px;
-            }
+        button.save {
+          background: var(--color-primary);
 
-            border: 0;
-            padding: 0 10px;
-            margin-left: 10px;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 1.2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 36px;
+          &:hover {
+            background: var(--color-primary-dark);
           }
+        }
 
-          button.save {
-            background: var(--color-primary);
+        button.close {
+          background: var(--text-color-light);
 
-            &:hover {
-              background: var(--color-primary-dark);
-            }
-          }
-
-          button.close {
-            background: var(--text-color-light);
-
-            &:hover {
-              background: var(--text-color-dark);
-            }
+          &:hover {
+            background: var(--text-color-dark);
           }
         }
       }
+    }
 
-      hr {
-        margin: 7px 0;
-        border-top: 1px solid #ccc;
+    hr {
+      margin: 7px 0;
+      border-top: 1px solid #ccc;
+    }
+
+    div.content {
+      padding: 30px;
+
+      label {
+        display: block;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-top: 20px;
       }
 
-      div.content {
-        padding: 30px;
+      input {
+        width: 100%;
+        border: 1px solid #eee;
+        padding: 10px 15px;
+        border-radius: 4px;
+        margin-top: 5px;
+        margin-bottom: 3px;
+      }
 
-        label {
-          display: block;
-          text-transform: uppercase;
-          font-weight: bold;
-          margin-top: 20px;
-        }
-
-        input {
-          width: 100%;
-          border: 1px solid #eee;
-          padding: 10px 15px;
-          border-radius: 4px;
-          margin-top: 5px;
-          margin-bottom: 3px;
-        }
-
-        > span {
-          margin-left: 10px;
-          font-size: 1.2rem;
-          font-stretch: italic;
-          text-transform: none;
-          color: var(--color-error);
-        }
+      > span {
+        margin-left: 10px;
+        font-size: 1.2rem;
+        font-stretch: italic;
+        text-transform: none;
+        color: var(--color-error);
       }
     }
   }

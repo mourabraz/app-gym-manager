@@ -12,6 +12,7 @@ import history from './services/history';
 import { store, persistor } from './store';
 
 import GlobalStyle from './styles/global';
+import Animations from './styles/animations';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Router history={history}>
           <Routes />
           <GlobalStyle />
+          <Animations />
           <ToastContainer autoClose={3000} />
         </Router>
       </PersistGate>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import {
   subMonths,
   subDays,
@@ -10,6 +11,8 @@ import {
 import pt from 'date-fns/locale/pt';
 
 import api from '~/services/api';
+
+import LoadingIndicator from '~/components/LoadingIndicator';
 
 import { Container, BoxGrid, Day, CheckinInfo, EmptyList } from './styles';
 
@@ -25,6 +28,7 @@ export default function ChekinsByDay() {
   });
   const [checkins, setCheckins] = useState([]);
   const [daysArray, setDaysArray] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const daysTemp = Array.from(new Array(84)).map((item, index) => {
@@ -48,11 +52,13 @@ export default function ChekinsByDay() {
       try {
         const { data } = await api.get(`/dashboard/checkins/day`);
         setCheckins(data.sort((a, b) => (a.date > b.date ? 1 : -1)));
+        setLoading(false);
       } catch (error) {
         console.tron.error(error);
       }
     }
 
+    setLoading(true);
     loadCheckins();
   }, []);
 
@@ -64,28 +70,38 @@ export default function ChekinsByDay() {
         </h2>
       </header>
 
-      {checkins.length ? (
-        <BoxGrid>
-          <div className="month month1">{month1}</div>
-          <div className="month month2">{month2}</div>
-          <div className="month month3">{month3}</div>
+      <TransitionGroup component={null}>
+        {loading ? (
+          <LoadingIndicator size={40} />
+        ) : (
+          checkins.length && (
+            <CSSTransition classNames="fadein" timeout={500}>
+              {checkins.length ? (
+                <BoxGrid>
+                  <div className="month month1">{month1}</div>
+                  <div className="month month2">{month2}</div>
+                  <div className="month month3">{month3}</div>
 
-          {daysArray.map(item => (
-            <Day key={String(item.id)}>
-              {item.date.getDate()}
-              <CheckinInfo>
-                {item.checkins.length ? (
-                  <span>{item.checkins[0].count}</span>
-                ) : null}
-              </CheckinInfo>
-            </Day>
-          ))}
-        </BoxGrid>
-      ) : (
-        <EmptyList>
-          <p>Sem entradas nos últimos 84 dias</p>
-        </EmptyList>
-      )}
+                  {daysArray.map(item => (
+                    <Day key={String(item.id)}>
+                      {item.date.getDate()}
+                      <CheckinInfo>
+                        {item.checkins.length ? (
+                          <span>{item.checkins[0].count}</span>
+                        ) : null}
+                      </CheckinInfo>
+                    </Day>
+                  ))}
+                </BoxGrid>
+              ) : (
+                <EmptyList>
+                  <p>Sem entradas nos últimos 84 dias</p>
+                </EmptyList>
+              )}
+            </CSSTransition>
+          )
+        )}
+      </TransitionGroup>
     </Container>
   );
 }

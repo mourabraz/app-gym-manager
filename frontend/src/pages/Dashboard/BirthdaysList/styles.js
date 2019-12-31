@@ -22,6 +22,7 @@ export const Container = styled.div`
 `;
 
 export const List = styled.table`
+  background: #fff;
   border-collapse: collapse;
 
   thead tr {

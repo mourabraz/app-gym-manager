@@ -3,6 +3,8 @@ import { Bar } from 'react-chartjs-2';
 
 import api from '~/services/api';
 
+import LoadingIndicator from '~/components/LoadingIndicator';
+
 import { Container, EmptyGraph } from './styles';
 
 function CheckinsByHour() {
@@ -45,6 +47,8 @@ function CheckinsByHour() {
     ],
   });
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     async function loadCheckins() {
       try {
@@ -64,11 +68,13 @@ function CheckinsByHour() {
             },
           ],
         });
+        setLoading(false);
       } catch (error) {
         console.tron.error(error);
       }
     }
 
+    setLoading(true);
     loadCheckins();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -81,23 +87,29 @@ function CheckinsByHour() {
         </h2>
       </header>
 
-      {dataChart.datasets[0].data.length ? (
-        <Bar
-          color="#EE4D64"
-          data={dataChart}
-          width={100}
-          height={50}
-          options={{
-            legend: {
-              display: false,
-            },
-            maintainAspectRatio: true,
-          }}
-        />
+      {loading ? (
+        <LoadingIndicator size={40} />
       ) : (
-        <EmptyGraph>
-          <p>Sem entradas nos últimos 84 dias</p>
-        </EmptyGraph>
+        <>
+          {dataChart.datasets[0].data.length ? (
+            <Bar
+              color="#EE4D64"
+              data={dataChart}
+              width={100}
+              height={50}
+              options={{
+                legend: {
+                  display: false,
+                },
+                maintainAspectRatio: true,
+              }}
+            />
+          ) : (
+            <EmptyGraph>
+              <p>Sem entradas nos últimos 84 dias</p>
+            </EmptyGraph>
+          )}
+        </>
       )}
     </Container>
   );

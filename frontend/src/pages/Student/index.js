@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect, useRef } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
 import {
   MdAdd,
@@ -13,6 +14,8 @@ import { toast } from 'react-toastify';
 
 import api from '~/services/api';
 
+import LoadingIndicator from '~/components/LoadingIndicator';
+
 import Create from './Modal/Create';
 
 import {
@@ -22,6 +25,7 @@ import {
   ButtonPagination,
   EmptyTable,
   DivBoxRow,
+  Loading,
 } from './styles';
 
 export default function Student({ history, location }) {
@@ -35,6 +39,8 @@ export default function Student({ history, location }) {
   const [total, setTotal] = useState(0);
   const [students, setStudents] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingPage, setLoadingPage] = useState(false);
 
   const [nameOrder, setNameOrder] = useState('asc');
   const [emailOrder, setEmailOrder] = useState('');
@@ -71,6 +77,9 @@ export default function Student({ history, location }) {
     setStudents(_students);
     setTotal(_total);
     setCurrentPage(_page);
+
+    setLoading(false);
+    setLoadingPage(false);
   }
 
   useEffect(() => {
@@ -79,6 +88,8 @@ export default function Student({ history, location }) {
       _page = Number(location.state.currentPage);
       setCurrentPage(_page);
     }
+
+    setLoading(true);
     loadStudents({ page: _page });
   }, []); // eslint-disable-line
 
@@ -97,6 +108,7 @@ export default function Student({ history, location }) {
     if (!isFirstPage) {
       const page = Number(currentPage) - 1;
       setCurrentPage(page);
+      setLoadingPage(true);
       loadStudents({
         page,
         query: currentQuery,
@@ -111,6 +123,7 @@ export default function Student({ history, location }) {
     if (!isLastPage) {
       const page = Number(currentPage) + 1;
       setCurrentPage(page);
+      setLoadingPage(true);
       loadStudents({
         page,
         query: currentQuery,
@@ -236,11 +249,17 @@ export default function Student({ history, location }) {
 
   return (
     <>
-      <Create
-        show={showCreate}
-        handleClose={handleClose}
-        handleSave={handleCreateStudent}
-      />
+      <TransitionGroup component={null}>
+        {showCreate && (
+          <CSSTransition classNames="dialog" timeout={300}>
+            <Create
+              handleClose={handleClose}
+              handleSave={handleCreateStudent}
+            />
+          </CSSTransition>
+        )}
+      </TransitionGroup>
+
       <Content>
         <Header>
           <h1>Gerenciando alunos</h1>
@@ -261,113 +280,131 @@ export default function Student({ history, location }) {
           </DivBoxRow>
         </Header>
 
-        {total ? (
-          <TableBox>
-            <div>
-              <p>
-                <span>Total de registros: {total}</span>
-                <span>Exibindo: {limit}</span>
-                <span>Página: {currentPage}</span>
-              </p>
-              <div className="pagination">
-                <ButtonPagination
-                  disabled={isFirstPage ? 1 : 0}
-                  type="button"
-                  onClick={handleBefore}
-                >
-                  <MdKeyboardArrowLeft color="#fff" size={20} />
-                  Anterior
-                </ButtonPagination>
-                <ButtonPagination
-                  disabled={isLastPage ? 1 : 0}
-                  type="button"
-                  onClick={handleNext}
-                >
-                  Próximo
-                  <MdKeyboardArrowRight color="#fff" size={20} />
-                </ButtonPagination>
-              </div>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th className="text-left">
-                    <MdArrowUpward
-                      color={nameOrder === 'desc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('name', 'desc')}
-                    />
-                    <MdArrowDownward
-                      color={nameOrder === 'asc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('name', 'asc')}
-                    />
-                    Nome
-                  </th>
-                  <th width="250" className="text-left">
-                    <MdArrowUpward
-                      color={emailOrder === 'desc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('email', 'desc')}
-                    />
-                    <MdArrowDownward
-                      color={emailOrder === 'asc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('email', 'asc')}
-                    />
-                    E-mail
-                  </th>
-                  <th width="100">
-                    <MdArrowUpward
-                      color={birthdayOrder === 'desc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('birthday', 'desc')}
-                    />
-                    <MdArrowDownward
-                      color={birthdayOrder === 'asc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('birthday', 'asc')}
-                    />
-                    Idade
-                  </th>
-                  <th width="100" />
-                </tr>
-              </thead>
-              <tbody>
-                {students.map(s => (
-                  <tr key={s.id}>
-                    <td>{s.name}</td>
-                    <td>{s.email}</td>
-                    <td className="text-center">{s.age}</td>
-                    <td className="text-center">
-                      <button
-                        className="edit-button"
-                        type="button"
-                        onClick={() => {
-                          handleShowEdit(s);
-                        }}
-                      >
-                        editar
-                      </button>
-                      <button
-                        className="delete-button"
-                        type="button"
-                        onClick={() => {
-                          handleDeleteStudent(s);
-                        }}
-                      >
-                        apagar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </TableBox>
+        {loading ? (
+          <Loading>
+            <LoadingIndicator size={40} />
+          </Loading>
         ) : (
-          <EmptyTable>
-            <p>Lista Vazia</p>
-          </EmptyTable>
+          <>
+            {total ? (
+              <TableBox>
+                <div>
+                  <p>
+                    <span>Total de registros: {total}</span>
+                    <span>Exibindo: {limit}</span>
+                    <span>Página: {currentPage}</span>
+                  </p>
+                  <div className="pagination">
+                    <ButtonPagination
+                      disabled={isFirstPage || loadingPage ? 1 : 0}
+                      type="button"
+                      onClick={handleBefore}
+                    >
+                      {loadingPage ? (
+                        <LoadingIndicator color="#fff" size={20} />
+                      ) : (
+                        <MdKeyboardArrowLeft color="#fff" size={20} />
+                      )}
+                      Anterior
+                    </ButtonPagination>
+                    <ButtonPagination
+                      disabled={isLastPage || loadingPage ? 1 : 0}
+                      type="button"
+                      onClick={handleNext}
+                    >
+                      Próximo
+                      {loadingPage ? (
+                        <LoadingIndicator color="#fff" size={20} />
+                      ) : (
+                        <MdKeyboardArrowRight color="#fff" size={20} />
+                      )}
+                    </ButtonPagination>
+                  </div>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th className="text-left">
+                        <MdArrowUpward
+                          color={nameOrder === 'desc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('name', 'desc')}
+                        />
+                        <MdArrowDownward
+                          color={nameOrder === 'asc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('name', 'asc')}
+                        />
+                        Nome
+                      </th>
+                      <th width="300" className="text-left">
+                        <MdArrowUpward
+                          color={emailOrder === 'desc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('email', 'desc')}
+                        />
+                        <MdArrowDownward
+                          color={emailOrder === 'asc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('email', 'asc')}
+                        />
+                        E-mail
+                      </th>
+                      <th width="100">
+                        <MdArrowUpward
+                          color={birthdayOrder === 'desc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('birthday', 'desc')}
+                        />
+                        <MdArrowDownward
+                          color={birthdayOrder === 'asc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('birthday', 'asc')}
+                        />
+                        Idade
+                      </th>
+                      <th width="100" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {students.map(s => (
+                      <tr key={s.id}>
+                        <td>{s.name}</td>
+                        <td>{s.email}</td>
+                        <td className="text-center">{s.age}</td>
+                        <td className="text-center">
+                          <button
+                            disabled={loadingPage ? 1 : 0}
+                            className="edit-button"
+                            type="button"
+                            onClick={() => {
+                              handleShowEdit(s);
+                            }}
+                          >
+                            editar
+                          </button>
+                          <button
+                            disabled={loadingPage ? 1 : 0}
+                            className="delete-button"
+                            type="button"
+                            onClick={() => {
+                              handleDeleteStudent(s);
+                            }}
+                          >
+                            apagar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TableBox>
+            ) : (
+              <EmptyTable>
+                <p>Lista Vazia</p>
+              </EmptyTable>
+            )}
+          </>
         )}
       </Content>
     </>

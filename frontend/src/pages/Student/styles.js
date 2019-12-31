@@ -6,6 +6,14 @@ export const Content = styled.div`
   margin: 0 auto;
 `;
 
+export const Loading = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -98,14 +106,25 @@ export const TableBox = styled.div`
 
         &.edit-button {
           color: var(--color-info-dark);
+
           &:hover {
             color: var(--color-info);
+          }
+
+          &[disabled] {
+            color: rgba(0, 0, 0, 0.3);
+            cursor: not-allowed;
           }
         }
         &.delete-button {
           color: var(--color-error-dark);
           &:hover {
             color: var(--color-error);
+          }
+
+          &[disabled] {
+            color: rgba(0, 0, 0, 0.3);
+            cursor: not-allowed;
           }
         }
       }
