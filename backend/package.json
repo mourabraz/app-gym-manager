@@ -7,8 +7,10 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "queue": "nodemon src/queue.js",
+    "dev-seed": "run-s unmigrate migrate seedall dev",
     "debug": "node -r sucrase/register --inspect src/server.js",
     "seed": "sequelize db:seed --seed 20191118154046-admin-user.js",
+    "seedall": "sequelize db:seed:all",
     "migrate": "sequelize db:migrate",
     "unmigrate": "sequelize db:migrate:undo:all",
     "pretest": "NODE_ENV=test run-s unmigrate migrate seed",
