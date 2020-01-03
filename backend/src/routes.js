@@ -11,6 +11,7 @@ import StudentHelpOrderController from './app/controllers/StudentHelpOrderContro
 import DashboardCheckinsByDayController from './app/controllers/DashboardCheckinsByDayController';
 import DashboardCheckinsByHourController from './app/controllers/DashboardCheckinsByHourController';
 import DashboardBirthdaysController from './app/controllers/DashboardBirthdaysController';
+import StudentWithoutRegistrationController from './app/controllers/StudentWithoutRegistrationController';
 
 import validateSessionStore from './app/validators/SessionStore';
 import validateStudentStore from './app/validators/StudentStore';
@@ -64,6 +65,11 @@ routes.use(authMiddleware);
 routes.get('/dashboard/checkins/day', DashboardCheckinsByDayController.index);
 routes.get('/dashboard/checkins/hour', DashboardCheckinsByHourController.index);
 routes.get('/dashboard/birthdays', DashboardBirthdaysController.index);
+
+routes.get(
+  '/report/students/without/registration',
+  StudentWithoutRegistrationController.index
+);
 
 routes.get('/students', StudentController.index);
 routes.post('/students', validateStudentStore, StudentController.store);
