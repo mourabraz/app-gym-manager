@@ -8,11 +8,15 @@ import authConfig from '../../src/config/auth';
 
 import truncate from '../util/truncate';
 
+import Queue from '../../src/lib/Queue';
+
 const user = {
   name: 'Administrador',
   email: 'admin@gympoint.com',
   password: '123456',
 };
+
+// jest.mock('../../src/lib/Queue');
 
 describe('HelpOrder', () => {
   beforeEach(async () => {
@@ -294,6 +298,8 @@ describe('HelpOrder', () => {
   });
 
   it('should create answer for help-order if authenticated', async () => {
+    Queue.add = jest.fn();
+
     const token = jwt.sign({ id: user.id }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
     });

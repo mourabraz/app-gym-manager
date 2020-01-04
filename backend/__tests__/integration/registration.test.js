@@ -11,6 +11,8 @@ import authConfig from '../../src/config/auth';
 
 import truncate from '../util/truncate';
 
+import Queue from '../../src/lib/Queue';
+
 const user = {
   name: 'Administrador',
   email: 'admin@gympoint.com',
@@ -112,6 +114,8 @@ describe('Registration', () => {
   });
 
   it('should create registration', async () => {
+    Queue.add = jest.fn();
+
     const token = jwt.sign({ id: user.id }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
     });
@@ -168,7 +172,7 @@ describe('Registration', () => {
     });
   });
 
-  it('should note create registration with plan not found', async () => {
+  it('should not create registration with plan not found', async () => {
     const token = jwt.sign({ id: user.id }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
     });
