@@ -16,27 +16,48 @@ O frontend utiliza a API do Gympoint ([pasta backend](../backend))
 
 2. As páginas são:
 
-- SigIn: para autenticação do usuário;
-- Dashboard: páginal inicial;
+- SigIn: para autenticação do usuário (apenas administradores);
+- Dashboard: páginal inicial (com gráficos);
 - Alunos: página que lista os Alunos da academia com paginação e ordenação pelo nome, email ou idade;
-- Planos: páginal inicial;
-- Matrículas: páginal inicial;
-- Pedidos de auxílio: páginal inicial;
+- Planos: página que lista os Planos da academia com paginação e ordenação pelo título, duração ou valor mensal;
+- Matrículas: _not implemented_;
+- Pedidos de auxílio: _not implemented_;
 
-- Cadastro de Alunos: Modal; e
-- Visualização/Edição: Visualiza dados do aluno e possibilita a edição do cadastro.
+- Cadastro de Alunos / Cadastro de Planos: Modal com animação com acesso pela página da lista respectiva;
+- Visualização/Edição: Visualiza dados do aluno (apenas as entradas efetuadas nos últimos 84 dias) e possibilita a edição do cadastro.
 
-<p align="center" style="margin: 25px 0">
-  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/login_blank.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/login_error.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/alunos_list.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/alunos_cadastro.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/alunos_cadastro_error.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/alunos_edit-view.png">
-  <img style="display: inline-block; margin: 0 10px" width="300" src="./imgs/profile.png">
-</p>
+<div align="center" style="margin: 25px 0">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/login_blank.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/login_error.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/entradas-dashboard.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/horas-dashboard.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/birthdays-dashboard.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/alunos_list.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/alunos_cadastro.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/alunos_cadastro_error.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/alunos_edit-view.png">
+</div>
 
  - O cadastro de alunos foi implementado usando um modal, enquanto a edição de um aluno abre uma nova página. Esta página de edição recebe os dados do estudante pela rota, enquanto realiza uma busca à API para apresentar dados extras sobre o aluno. A opção de passar o aluno no state da rota teve como objetivo o treino.
+
+ - Para efeitos de desenvolvimento o service/api.js adiciona um delay a todas as requisições:
+
+ ```js
+ import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:3333',
+});
+
+/*
+ * add delay for all requests, only for development purposes
+ */
+api.interceptors.request.use(
+  config => new Promise(resolve => setTimeout(_ => resolve(config), 2000))
+);
+
+export default api;
+```
 
 ## Instalação e Inicialização
 
