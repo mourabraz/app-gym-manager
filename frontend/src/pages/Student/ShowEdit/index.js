@@ -174,7 +174,6 @@ export default function ShowEdit({ history, location }) {
           </DivBoxRow>
         </div>
       </Form>
-
       <CheckInTable studentId={student.id} />
     </Container>
   );

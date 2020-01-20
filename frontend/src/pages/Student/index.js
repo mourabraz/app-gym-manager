@@ -17,6 +17,8 @@ import api from '~/services/api';
 import LoadingIndicator from '~/components/LoadingIndicator';
 
 import Create from './Modal/Create';
+import Modal from '~/components/Modal';
+import EditForm from './Form/Edit';
 
 import {
   Content,
@@ -26,6 +28,7 @@ import {
   EmptyTable,
   DivBoxRow,
   Loading,
+  Alert,
 } from './styles';
 
 export default function Student({ history, location }) {
@@ -39,6 +42,9 @@ export default function Student({ history, location }) {
   const [total, setTotal] = useState(0);
   const [students, setStudents] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
+
+  const [selectStudentToEdit, setSelectedStudentToEdit] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [loadingPage, setLoadingPage] = useState(false);
 
@@ -64,13 +70,6 @@ export default function Student({ history, location }) {
       last_page: _lastPage,
     } = response.data;
 
-    // console.tron.log(
-    //   `loadSturents called`,
-    //   _students,
-    //   _page,
-    //   _total,
-    //   _lastPage
-    // );
     setIsFirstPage(Number(page) === 1);
     setIsLastPage(Number(page) === _lastPage);
 
@@ -247,8 +246,27 @@ export default function Student({ history, location }) {
     });
   }
 
+  function handleShowModalEdit(student) {
+    setSelectedStudentToEdit(student);
+  }
+
   return (
     <>
+      <Modal visible={selectStudentToEdit !== null}>
+        {selectStudentToEdit ? (
+          <EditForm
+            oldStudent={selectStudentToEdit}
+            handleSave={_student => {
+              setStudents(
+                students.map(s => (s.id === _student.id ? _student : s))
+              );
+              setSelectedStudentToEdit(null);
+            }}
+            handleClose={() => setSelectedStudentToEdit(null)}
+          />
+        ) : null}
+      </Modal>
+
       <TransitionGroup component={null}>
         {showCreate && (
           <CSSTransition classNames="dialog" timeout={300}>
@@ -280,6 +298,17 @@ export default function Student({ history, location }) {
           </DivBoxRow>
         </Header>
 
+        <Alert>
+          <h3>Apenas por motivos de demonstração:</h3>
+          <p>
+            Existem dois tipos de edição, a edição do aluno abrindo uma nova
+            página, podendo, além da edição, visualizar informações do aluno. E
+            a edição do aluno por meio de um modal, o uso deste modal é
+            demonstrar o use do createPortal do React e os cuidados que deve-se
+            ter ao implementar um modal que sirva para cada uma das linhas da
+            tabela.
+          </p>
+        </Alert>
         {loading ? (
           <Loading>
             <LoadingIndicator size={40} />
@@ -364,6 +393,7 @@ export default function Student({ history, location }) {
                         Idade
                       </th>
                       <th width="100" />
+                      <th width="50">modal</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -392,6 +422,18 @@ export default function Student({ history, location }) {
                             }}
                           >
                             apagar
+                          </button>
+                        </td>
+                        <td className="text-center">
+                          <button
+                            disabled={loadingPage ? 1 : 0}
+                            className="edit-button"
+                            type="button"
+                            onClick={() => {
+                              handleShowModalEdit(s);
+                            }}
+                          >
+                            edit
                           </button>
                         </td>
                       </tr>

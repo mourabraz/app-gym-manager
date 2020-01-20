@@ -24,6 +24,7 @@ O frontend utiliza a API do Gympoint ([pasta backend](../backend))
 - Pedidos de auxílio: _not implemented_;
 
 - Cadastro de Alunos / Cadastro de Planos: Modal com animação com acesso pela página da lista respectiva;
+- Edição de Aluno: modal que carrega um form para editar o aluno selecionado, por meio do `createPortal` do React;
 - Visualização/Edição: Visualiza dados do aluno (apenas as entradas efetuadas nos últimos 84 dias) e possibilita a edição do cadastro.
 
 <div align="center" style="margin: 25px 0">
@@ -38,12 +39,12 @@ O frontend utiliza a API do Gympoint ([pasta backend](../backend))
   <img style="display: inline-block; margin: 10px" width="300" src="./imgs/alunos_edit-view.png">
 </div>
 
- - O cadastro de alunos foi implementado usando um modal, enquanto a edição de um aluno abre uma nova página. Esta página de edição recebe os dados do estudante pela rota, enquanto realiza uma busca à API para apresentar dados extras sobre o aluno. A opção de passar o aluno no state da rota teve como objetivo o treino.
+- O cadastro de alunos foi implementado usando um modal, enquanto a edição de um aluno abre uma nova página. Esta página de edição recebe os dados do estudante pela rota, enquanto realiza uma busca à API para apresentar dados extras sobre o aluno. A opção de passar o aluno no state da rota teve como objetivo o treino.
 
- - Para efeitos de desenvolvimento o service/api.js adiciona um delay a todas as requisições:
+- Para efeitos de desenvolvimento o service/api.js adiciona um delay a todas as requisições:
 
- ```js
- import axios from 'axios';
+```js
+import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://localhost:3333',

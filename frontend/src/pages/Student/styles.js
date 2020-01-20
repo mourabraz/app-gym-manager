@@ -223,3 +223,18 @@ export const DivBoxRow = styled.div`
     }
   }
 `;
+
+export const Alert = styled.div`
+  width: 80%;
+  margin: 25px auto 0;
+  color: #666;
+  background: #fff;
+  font-size: 75%;
+  border-radius: 4px;
+  border: 1px solid red;
+  padding: 20px;
+
+  h3 {
+    margin-bottom: 10px;
+  }
+`;
