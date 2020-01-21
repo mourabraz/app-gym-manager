@@ -40,6 +40,7 @@ O frontend utiliza a API do Gympoint ([pasta backend](../backend))
 </div>
 
 - O cadastro de alunos foi implementado usando um modal, enquanto a edição de um aluno abre uma nova página. Esta página de edição recebe os dados do estudante pela rota, enquanto realiza uma busca à API para apresentar dados extras sobre o aluno. A opção de passar o aluno no state da rota teve como objetivo o treino.
+- A fim de demonstrar o uso do _createPortal_ do React foi implementado um outro modo de edição, apartir da lista de alunos pode-se selectionar o aluno a editar e por meio de um formulário dentro do modal pode-se realizar a edição.
 
 - Para efeitos de desenvolvimento o service/api.js adiciona um delay a todas as requisições:
 
