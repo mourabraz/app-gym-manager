@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 
 import api from '~/services/api';
 
+import LoadingIndicator from '~/components/LoadingIndicator';
 import Create from './Modal/Create';
 
 import {
@@ -23,12 +24,14 @@ import {
   ButtonPagination,
   EmptyTable,
   DivBoxRow,
+  Loading,
 } from './styles';
 
 export default function Plan({ history, location }) {
   const limit = 20;
   const timer = useRef(null);
 
+  const [loading, setLoading] = useState(true);
   const [isFirstPage, setIsFirstPage] = useState(true);
   const [isLastPage, setIsLastPage] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,6 +68,7 @@ export default function Plan({ history, location }) {
     setPlans(_plans);
     setTotal(_total);
     setCurrentPage(_page);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -73,6 +77,7 @@ export default function Plan({ history, location }) {
       _page = Number(location.state.currentPage);
       setCurrentPage(_page);
     }
+    setLoading(true);
     loadPlans({ page: _page });
   }, []); // eslint-disable-line
 
@@ -253,118 +258,127 @@ export default function Plan({ history, location }) {
                 type="text"
                 placeholder="Buscar plano"
                 onChange={handleQueryChange}
+                disabled={loading ? 1 : 0}
               />
             </label>
           </DivBoxRow>
         </Header>
 
-        {total ? (
-          <TableBox>
-            <div>
-              <p>
-                <span>Total de registros: {total}</span>
-                <span>Exibindo: {limit}</span>
-                <span>Página: {currentPage}</span>
-              </p>
-              <div className="pagination">
-                <ButtonPagination
-                  disabled={isFirstPage ? 1 : 0}
-                  type="button"
-                  onClick={handleBefore}
-                >
-                  <MdKeyboardArrowLeft color="#fff" size={20} />
-                  Anterior
-                </ButtonPagination>
-                <ButtonPagination
-                  disabled={isLastPage ? 1 : 0}
-                  type="button"
-                  onClick={handleNext}
-                >
-                  Próximo
-                  <MdKeyboardArrowRight color="#fff" size={20} />
-                </ButtonPagination>
-              </div>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th className="text-left">
-                    <MdArrowUpward
-                      color={titleOrder === 'desc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('title', 'desc')}
-                    />
-                    <MdArrowDownward
-                      color={titleOrder === 'asc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('title', 'asc')}
-                    />
-                    Título
-                  </th>
-                  <th width="150" className="text-center">
-                    <MdArrowUpward
-                      color={durationOrder === 'desc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('duration', 'desc')}
-                    />
-                    <MdArrowDownward
-                      color={durationOrder === 'asc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('duration', 'asc')}
-                    />
-                    Duração
-                  </th>
-                  <th width="200" className="text-center">
-                    <MdArrowUpward
-                      color={priceOrder === 'desc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('price', 'desc')}
-                    />
-                    <MdArrowDownward
-                      color={priceOrder === 'asc' ? '#000' : '#ccc'}
-                      size={20}
-                      onClick={() => handleSortOrder('price', 'asc')}
-                    />
-                    Valor p/ Mês
-                  </th>
-                  <th width="100" />
-                </tr>
-              </thead>
-              <tbody>
-                {plans.map(s => (
-                  <tr key={s.id}>
-                    <td>{s.title}</td>
-                    <td className="text-center">{s.duration}</td>
-                    <td className="text-right">{s.price}</td>
-                    <td className="text-center">
-                      <button
-                        className="edit-button"
-                        type="button"
-                        onClick={() => {
-                          handleShowEdit(s);
-                        }}
-                      >
-                        editar
-                      </button>
-                      <button
-                        className="delete-button"
-                        type="button"
-                        onClick={() => {
-                          handleDeletePlan(s);
-                        }}
-                      >
-                        apagar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </TableBox>
+        {loading ? (
+          <Loading>
+            <LoadingIndicator size={40} />
+          </Loading>
         ) : (
-          <EmptyTable>
-            <p>Lista Vazia</p>
-          </EmptyTable>
+          <>
+            {total ? (
+              <TableBox>
+                <div>
+                  <p>
+                    <span>Total de registros: {total}</span>
+                    <span>Exibindo: {limit}</span>
+                    <span>Página: {currentPage}</span>
+                  </p>
+                  <div className="pagination">
+                    <ButtonPagination
+                      disabled={isFirstPage ? 1 : 0}
+                      type="button"
+                      onClick={handleBefore}
+                    >
+                      <MdKeyboardArrowLeft color="#fff" size={20} />
+                      Anterior
+                    </ButtonPagination>
+                    <ButtonPagination
+                      disabled={isLastPage ? 1 : 0}
+                      type="button"
+                      onClick={handleNext}
+                    >
+                      Próximo
+                      <MdKeyboardArrowRight color="#fff" size={20} />
+                    </ButtonPagination>
+                  </div>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th className="text-left">
+                        <MdArrowUpward
+                          color={titleOrder === 'desc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('title', 'desc')}
+                        />
+                        <MdArrowDownward
+                          color={titleOrder === 'asc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('title', 'asc')}
+                        />
+                        Título
+                      </th>
+                      <th width="150" className="text-center">
+                        <MdArrowUpward
+                          color={durationOrder === 'desc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('duration', 'desc')}
+                        />
+                        <MdArrowDownward
+                          color={durationOrder === 'asc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('duration', 'asc')}
+                        />
+                        Duração
+                      </th>
+                      <th width="200" className="text-center">
+                        <MdArrowUpward
+                          color={priceOrder === 'desc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('price', 'desc')}
+                        />
+                        <MdArrowDownward
+                          color={priceOrder === 'asc' ? '#000' : '#ccc'}
+                          size={20}
+                          onClick={() => handleSortOrder('price', 'asc')}
+                        />
+                        Valor p/ Mês
+                      </th>
+                      <th width="100" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {plans.map(s => (
+                      <tr key={s.id}>
+                        <td>{s.title}</td>
+                        <td className="text-center">{s.duration}</td>
+                        <td className="text-right">{s.price}</td>
+                        <td className="text-center">
+                          <button
+                            className="edit-button"
+                            type="button"
+                            onClick={() => {
+                              handleShowEdit(s);
+                            }}
+                          >
+                            editar
+                          </button>
+                          <button
+                            className="delete-button"
+                            type="button"
+                            onClick={() => {
+                              handleDeletePlan(s);
+                            }}
+                          >
+                            apagar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TableBox>
+            ) : (
+              <EmptyTable>
+                <p>Lista Vazia</p>
+              </EmptyTable>
+            )}
+          </>
         )}
       </Content>
     </>

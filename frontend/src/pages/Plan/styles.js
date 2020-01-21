@@ -6,6 +6,14 @@ export const Content = styled.div`
   margin: 0 auto;
 `;
 
+export const Loading = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;

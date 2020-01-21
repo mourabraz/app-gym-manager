@@ -42,7 +42,6 @@ export default function Student({ history, location }) {
   const [total, setTotal] = useState(0);
   const [students, setStudents] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
-
   const [selectStudentToEdit, setSelectedStudentToEdit] = useState(null);
 
   const [loading, setLoading] = useState(true);
