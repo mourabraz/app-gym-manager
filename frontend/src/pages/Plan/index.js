@@ -54,6 +54,10 @@ export default function Plan({ history, location }) {
     const response = await api.get(
       `/plans?page=${page}&limit=${limit}&q=${query}&title=${title}&duration=${duration}&price=${price}`
     );
+    const currencyFormat = new Intl.NumberFormat('pt', {
+      style: 'currency',
+      currency: 'EUR',
+    });
 
     const {
       plans: _plans,
@@ -65,7 +69,12 @@ export default function Plan({ history, location }) {
     setIsFirstPage(Number(page) === 1);
     setIsLastPage(Number(page) === _lastPage);
 
-    setPlans(_plans);
+    setPlans(
+      _plans.map(p => ({
+        ...p,
+        formatedPrice: currencyFormat.format(p.price / 100),
+      }))
+    );
     setTotal(_total);
     setCurrentPage(_page);
     setLoading(false);
@@ -347,7 +356,7 @@ export default function Plan({ history, location }) {
                       <tr key={s.id}>
                         <td>{s.title}</td>
                         <td className="text-center">{s.duration}</td>
-                        <td className="text-right">{s.price}</td>
+                        <td className="text-right">{s.formatedPrice}</td>
                         <td className="text-center">
                           <button
                             className="edit-button"
