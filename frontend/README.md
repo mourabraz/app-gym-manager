@@ -20,7 +20,7 @@ O frontend utiliza a API do Gympoint ([pasta backend](../backend))
 - Dashboard: páginal inicial (com gráficos);
 - Alunos: página que lista os Alunos da academia com paginação e ordenação pelo nome, email ou idade;
 - Planos: página que lista os Planos da academia com paginação e ordenação pelo título, duração ou valor mensal;
-- Matrículas: _not implemented_;
+- Matrículas: página que lista as Matrículas da academia com paginação e ordenação pelo nome do aluno, título do plano, data de início ou data de término;
 - Pedidos de auxílio: _not implemented_;
 
 - Cadastro de Alunos / Cadastro de Planos: Modal com animação com acesso pela página da lista respectiva;
@@ -37,6 +37,7 @@ O frontend utiliza a API do Gympoint ([pasta backend](../backend))
   <img style="display: inline-block; margin: 10px" width="300" src="./imgs/alunos_cadastro.png">
   <img style="display: inline-block; margin: 10px" width="300" src="./imgs/alunos_cadastro_error.png">
   <img style="display: inline-block; margin: 10px" width="300" src="./imgs/alunos_edit-view.png">
+  <img style="display: inline-block; margin: 10px" width="300" src="./imgs/matriculas_list.png">
 </div>
 
 - O cadastro de alunos foi implementado usando um modal, enquanto a edição de um aluno abre uma nova página. Esta página de edição recebe os dados do estudante pela rota, enquanto realiza uma busca à API para apresentar dados extras sobre o aluno. A opção de passar o aluno no state da rota teve como objetivo o treino.
