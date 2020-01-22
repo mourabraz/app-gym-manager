@@ -10,19 +10,56 @@ import NewRegistrationMail from '../jobs/NewRegistrationMail';
 
 class RegistrationController {
   async index(req, res) {
-    const { page = 1 } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      name = '',
+      plan = '',
+      start = '',
+      end = '',
+    } = req.query;
 
-    const registrations = await Registration.findAll({
-      order: [['updatedAt', 'desc']],
-      limit: 10,
-      offset: (page - 1) * 10,
+    const order = [];
+    if (name) {
+      order.push(['student', 'name', name]);
+    }
+    if (plan) {
+      order.push(['plan', 'title', plan]);
+    }
+    if (start) {
+      order.push(['start_date', start]);
+    }
+    if (end) {
+      order.push(['end_date', end]);
+    }
+    if (!order.length) {
+      order.push(['student', 'name']);
+    }
+
+    const data = await Registration.findAndCountAll({
+      where: {},
+      include: [
+        {
+          model: Student,
+          key: 'id',
+          as: 'student',
+        },
+        {
+          model: Plan,
+          key: 'id',
+          as: 'plan',
+        },
+      ],
+      order,
+      limit,
+      offset: (page - 1) * limit,
     });
 
     return res.json({
-      registrations,
+      registrations: data.rows,
       page,
-      last_page: Math.ceil(registrations.length / 10) || 1,
-      total: registrations.length,
+      last_page: Math.ceil(data.count / limit),
+      total: data.count,
     });
   }
 
