@@ -1,6 +1,6 @@
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
-import { addMonths, parseISO } from 'date-fns';
+import { addHours, addMonths, parseISO } from 'date-fns';
 
 import app from '../../src/app';
 import factory from '../factories';
@@ -253,8 +253,8 @@ describe('Registration', () => {
     const student = await factory.create('Student');
     const plan = await factory.create('Plan');
     await factory.create('Registration', {
-      start_date: '2019-12-20T08:00:00+00:00',
-      end_date: '2020-12-20T08:00:00+00:00',
+      start_date: addHours(new Date(), 2).toISOString(),
+      end_date: addMonths(new Date(), 12).toISOString(),
       student_id: student.id,
       plan_id: plan.id,
     });
@@ -263,7 +263,7 @@ describe('Registration', () => {
     registration = registration.toJSON();
     registration = {
       ...registration,
-      start_date: '2020-01-20T07:00:00+00:00',
+      start_date: addMonths(new Date(), 10).toISOString(),
       student_id: student.id,
       plan_id: plan.id,
     };
@@ -731,9 +731,9 @@ describe('Registration', () => {
       total: 3,
       registrations: [
         {
-          id: registration3.id,
-          student_id: student3.id,
-          plan_id: plan3.id,
+          id: registration.id,
+          student_id: student.id,
+          plan_id: plan.id,
         },
         {
           id: registration2.id,
@@ -741,9 +741,9 @@ describe('Registration', () => {
           plan_id: plan2.id,
         },
         {
-          id: registration.id,
-          student_id: student.id,
-          plan_id: plan.id,
+          id: registration3.id,
+          student_id: student3.id,
+          plan_id: plan3.id,
         },
       ],
     });
@@ -800,14 +800,14 @@ describe('Registration', () => {
       total: 2,
       registrations: [
         {
-          id: registration2.id,
-          student_id: student2.id,
-          plan_id: plan2.id,
-        },
-        {
           id: registration.id,
           student_id: student.id,
           plan_id: plan.id,
+        },
+        {
+          id: registration2.id,
+          student_id: student2.id,
+          plan_id: plan2.id,
         },
       ],
     });
