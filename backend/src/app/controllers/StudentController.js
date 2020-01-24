@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import Sequelize, { Op } from 'sequelize';
 import { parseISO } from 'date-fns';
 import Student from '../models/Student';
 
@@ -11,6 +11,7 @@ class StudentController {
       name = '',
       email = '',
       birthday = '',
+      active = 2,
     } = req.query;
 
     const order = [];
@@ -27,12 +28,30 @@ class StudentController {
       order.push(['name', 'asc']);
     }
 
-    const data = await Student.findAndCountAll({
+    const whereQuery = {
       where: {
         name: {
           [Op.like]: `%${query}%`,
         },
       },
+    };
+
+    if (Number(active) === 0) {
+      whereQuery.where.id = {
+        [Op.notIn]: Sequelize.literal(
+          `(SELECT student_id FROM registrations WHERE registrations.end_date >= (NOW() + interval '1 hours') AND registrations.start_date <= (NOW() - interval '1 hours'))`
+        ),
+      };
+    } else if (Number(active) === 1) {
+      whereQuery.where.id = {
+        [Op.in]: Sequelize.literal(
+          `(SELECT student_id FROM registrations WHERE registrations.end_date >= (NOW() + interval '1 hours') AND registrations.start_date <= (NOW() - interval '1 hours'))`
+        ),
+      };
+    }
+
+    const data = await Student.findAndCountAll({
+      ...whereQuery,
       order,
       limit,
       offset: (page - 1) * limit,
