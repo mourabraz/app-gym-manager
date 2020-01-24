@@ -151,4 +151,8 @@ export const DivBoxColumn = styled.div`
   & + div {
     padding-left: 20px;
   }
+
+  input.text-right {
+    text-align: right;
+  }
 `;

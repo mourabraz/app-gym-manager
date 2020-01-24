@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input } from '@rocketseat/unform';
-import { differenceInYears, format, subYears } from 'date-fns';
+import { Form } from '@rocketseat/unform';
+import { addMonths, startOfDay, format } from 'date-fns';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
 
@@ -12,6 +12,8 @@ import * as Yup from 'yup';
 import api from '~/services/api';
 
 import DatePicker from '~/components/DatePicker';
+import AssyncSelect from '~/components/AssyncSelect';
+import ReactSelect from '~/components/ReactSelect';
 
 import {
   Container,
@@ -23,15 +25,15 @@ import {
   ButtonClose,
 } from './styles';
 
-const schema = Yup.object().shape({
-  student_id: Yup.number().required('O Aluno é obrigatório'),
-  plan_id: Yup.number().required('O Plano é obrigatório'),
-  start_date: Yup.date()
-    .required('A data de nascimento é obrigatória')
-    .min(new Date(), 'Somente para maiores de 10 anos'),
-});
-
 export default function CreateForm({ handleSave, handleClose }) {
+  const schema = Yup.object().shape({
+    student_id: Yup.string().required('O Aluno é obrigatório'),
+    plan_id: Yup.string().required('O Plano é obrigatório'),
+    start_date: Yup.date()
+      .required()
+      .min(startOfDay(new Date()), 'Somente a partir do dia de hoje'),
+  });
+
   const registration = {
     student_id: 0,
     plan_id: 0,
@@ -40,8 +42,35 @@ export default function CreateForm({ handleSave, handleClose }) {
 
   const [errorApi, setErrorApi] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [endDate, setEndDate] = useState(new Date());
-  const [totalPrice, setTotalPrice] = useState(new Date());
+  const [endDate, setEndDate] = useState(format(new Date(), 'dd/MM/yyyy'));
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [plans, setPlans] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [plan, setPlan] = useState();
+
+  useEffect(() => {
+    async function loadPlans() {
+      const response = await api.get(`/plans?limit=500`);
+      const currencyFormat = new Intl.NumberFormat('pt', {
+        style: 'currency',
+        currency: 'EUR',
+      });
+
+      const { plans: _plans } = response.data;
+
+      setPlans(
+        _plans
+          ? _plans.map(p => ({
+              ...p,
+              originalTitle: p.title,
+              title: `${p.title} (${currencyFormat.format(p.price / 100)})`,
+            }))
+          : []
+      );
+    }
+
+    loadPlans();
+  }, []);
 
   useEffect(() => {
     if (errorApi) {
@@ -60,16 +89,21 @@ export default function CreateForm({ handleSave, handleClose }) {
     }
   }, [errorApi]);
 
+  useEffect(() => {
+    if (!plan || !startDate) return;
+    const _price = new Intl.NumberFormat('pt', {
+      style: 'currency',
+      currency: 'EUR',
+    }).format((plan.price * plan.duration) / 100);
+    setTotalPrice(_price);
+    setEndDate(format(addMonths(startDate, plan.duration), 'dd/MM/yyyy'));
+  }, [plan, startDate]);
+
   async function handleInternalSave(data) {
+    console.tron.log('handleInternalSave', data);
     setSaving(true);
     try {
-      // data = {
-      //   ...data,
-      //   start_date: format(data.start_date, 'yyyy-MM-dd'),
-      // };
-
       const response = await api.post(`/registrations`, data);
-
       handleSave(response.data);
       setSaving(false);
     } catch (error) {
@@ -80,7 +114,32 @@ export default function CreateForm({ handleSave, handleClose }) {
   }
 
   function handleDatePickerChange(date) {
-    // setAge(differenceInYears(new Date(), date));
+    setStartDate(startOfDay(date));
+  }
+
+  function handleSelectChange(_plan) {
+    setPlan(_plan);
+  }
+
+  function getPromisse(inputValue) {
+    return new Promise((resolve, reject) => {
+      api
+        .get(`/students?page=1&limit=100&q=${inputValue}&active=0`)
+        .then(result => {
+          const { students } = result.data;
+          if (students.length > 0) {
+            resolve(students.map(s => ({ value: s.id, label: s.name })));
+          } else {
+            resolve([
+              {
+                value: 0,
+                label: 'Digite as primeiras letras do nome do aluno',
+              },
+            ]);
+          }
+        })
+        .catch(error => reject(error));
+    });
   }
 
   return (
@@ -123,12 +182,19 @@ export default function CreateForm({ handleSave, handleClose }) {
           <hr />
 
           <div className="content">
-            <label>Aluno</label>
-            <Input
-              type="text"
-              name="name"
-              placeholder="John Doe"
-              disabled={saving ? 1 : 0}
+            <AssyncSelect
+              name="student_id"
+              label="Aluno (sem matrícula ativa)"
+              promiseOptions={getPromisse}
+              disabled={saving}
+            />
+
+            <ReactSelect
+              name="plan_id"
+              label="Plano"
+              options={plans}
+              onChange={handleSelectChange}
+              disabled={saving}
             />
 
             <DivBoxRow>
@@ -143,12 +209,17 @@ export default function CreateForm({ handleSave, handleClose }) {
 
               <DivBoxColumn>
                 <label>Data de Término</label>
-                <input type="text" value="" disabled />
+                <input type="text" value={endDate} disabled />
               </DivBoxColumn>
 
               <DivBoxColumn>
                 <label>Valor Final</label>
-                <input type="text" value="" disabled />
+                <input
+                  type="text"
+                  className="text-right"
+                  value={totalPrice}
+                  disabled
+                />
               </DivBoxColumn>
             </DivBoxRow>
           </div>

@@ -6,18 +6,18 @@ import { useField } from '@rocketseat/unform';
 
 import { Container } from './styles';
 
-export default function DatePicker({ onChange, ...rest }) {
+export default function DatePicker({ name, onChange, ...rest }) {
   registerLocale('pt', pt);
   const ref = useRef();
 
-  const { registerField, error, defaultValue } = useField('birthday');
+  const { fieldName, registerField, defaultValue, error } = useField(name);
 
   const [selected, setSelected] = useState(defaultValue || new Date());
 
   useEffect(() => {
     if (ref.current) {
       registerField({
-        name: 'birthday',
+        name: fieldName,
         ref: ref.current,
         path: 'props.selected',
         clearValue: pickerRef => {
@@ -31,7 +31,7 @@ export default function DatePicker({ onChange, ...rest }) {
     <Container>
       <ReactDatePicker
         locale="pt"
-        name="birthday"
+        name={fieldName}
         selected={selected}
         onChange={date => {
           setSelected(date);
@@ -47,5 +47,6 @@ export default function DatePicker({ onChange, ...rest }) {
 }
 
 DatePicker.propTypes = {
+  name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };
