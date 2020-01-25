@@ -159,6 +159,14 @@ export const ButtonPagination = styled.button`
   }
 `;
 
+export const ButtonActive = styled.button`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  border: 0;
+  color: var(--text-color);
+`;
+
 export const EmptyTable = styled.div`
   min-height: 250px;
   margin-top: 15px;

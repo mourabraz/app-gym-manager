@@ -10,13 +10,6 @@ import { Container, EmptyGraph } from './styles';
 function CheckinsByHour() {
   const [dataChart, setDataChart] = useState({
     labels: [
-      '00h',
-      '01h',
-      '02h',
-      '03h',
-      '04h',
-      '05h',
-      '06h',
       '07h',
       '08h',
       '09h',
@@ -53,9 +46,9 @@ function CheckinsByHour() {
     async function loadCheckins() {
       try {
         const { data } = await api.get(`/dashboard/checkins/hour`);
-        const list = Array.from({ length: 24 }, () => 0).map((item, index) =>
-          data.find(d => d.hour === index)
-            ? Number(data.find(d => d.hour === index).count)
+        const list = Array.from({ length: 17 }, () => 0).map((item, index) =>
+          data.find(d => d.hour === index + 7)
+            ? Number(data.find(d => d.hour === index + 7).count)
             : 0
         );
 
@@ -85,6 +78,7 @@ function CheckinsByHour() {
         <h2>
           Entradas na Academia por horas <span>últimos 84 dias</span>
         </h2>
+        <h5>Academia abre às 08h00 e fecha às 22h00 7 dias por semana</h5>
       </header>
 
       {loading ? (

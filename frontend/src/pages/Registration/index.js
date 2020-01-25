@@ -30,6 +30,7 @@ import {
   EmptyTable,
   DivBoxRow,
   Loading,
+  ButtonActive,
 } from './styles';
 
 export default function Registration({ location }) {
@@ -53,6 +54,7 @@ export default function Registration({ location }) {
   const [planOrder, setPlanOrder] = useState('');
   const [startOrder, setStartOrder] = useState('');
   const [endOrder, setEndOrder] = useState('');
+  const [activeFilter, setActiveFilter] = useState(2);
 
   async function loadRegistrations({
     page = 1,
@@ -61,9 +63,10 @@ export default function Registration({ location }) {
     plan = '',
     start = '',
     end = '',
+    active = 2,
   } = {}) {
     const response = await api.get(
-      `/registrations?page=${page}&limit=${limit}&q=${query}&name=${name}&plan=${plan}&start=${start}&end=${end}`
+      `/registrations?page=${page}&limit=${limit}&q=${query}&name=${name}&plan=${plan}&start=${start}&end=${end}&active=${active}`
     );
 
     const {
@@ -121,6 +124,7 @@ export default function Registration({ location }) {
         plan: planOrder,
         start: startOrder,
         end: endOrder,
+        active: activeFilter,
       });
     }
   }
@@ -137,6 +141,7 @@ export default function Registration({ location }) {
         plan: planOrder,
         start: startOrder,
         end: endOrder,
+        active: activeFilter,
       });
     }
   }
@@ -150,24 +155,51 @@ export default function Registration({ location }) {
   }
 
   function handleCreateRegistration(registration) {
+    console.tron.log('handleCreateRegistration', registration);
+
     setCurrentQuery('');
     setCurrentPage(1);
     setIsFirstPage(true);
     setIsLastPage(total + 1 <= limit);
     setTotal(total + 1);
-    setNameOrder('');
+    setNameOrder('asc');
     setPlanOrder('');
     setStartOrder('');
     setEndOrder('');
+
+    registration = {
+      ...registration,
+      startDateFormated: format(
+        utcToZonedTime(registration.start_date, 'Europe/Lisbon'),
+        "dd 'de' MMMM 'de' yyyy",
+        { timeZone: 'Europe/Lisbon', locale: pt }
+      ),
+      endDateFormated: format(
+        utcToZonedTime(registration.end_date, 'Europe/Lisbon'),
+        "dd 'de' MMMM 'de' yyyy",
+        { timeZone: 'Europe/Lisbon', locale: pt }
+      ),
+    };
 
     const oldRegistrations = registrations;
     if (oldRegistrations.length >= limit) {
       oldRegistrations.pop();
     }
 
-    // TODO: Melhorar a exibição do student adicionado
-    setRegistrations([...oldRegistrations, registration]);
+    oldRegistrations.push(registration);
 
+    oldRegistrations.sort((a, b) =>
+      // eslint-disable-next-line no-nested-ternary
+      a.student.name > b.student.name
+        ? 1
+        : a.student.name < b.student.name
+        ? -1
+        : 0
+    );
+
+    // TODO: Melhorar a exibição do student adicionado
+    setRegistrations([...oldRegistrations]);
+    setShowCreate(false);
     toast.success(
       `Matrícula cadastrada com sucesso! Para o aluno de nome: ${registration.student.name}`
     );
@@ -203,6 +235,7 @@ export default function Registration({ location }) {
     let tempPlanOrder = planOrder;
     let tempStartOrder = startOrder;
     let tempEndOrder = endOrder;
+    setLoadingPage(true);
 
     if (field === 'name') {
       if (order === tempNameOrder) {
@@ -261,11 +294,32 @@ export default function Registration({ location }) {
       plan: tempPlanOrder,
       start: tempStartOrder,
       end: tempEndOrder,
+      active: activeFilter,
     });
   }
 
   function handleShowModalEdit(registration) {
     setSelectedRegistrationToEdit(registration);
+  }
+
+  function changeActiveFilter() {
+    setLoadingPage(true);
+    let active = activeFilter;
+
+    if (activeFilter === 0) active = 1;
+    else if (activeFilter === 1) active = 2;
+    else active = 0;
+
+    setActiveFilter(active);
+    loadRegistrations({
+      page: currentPage,
+      query: currentQuery,
+      name: nameOrder,
+      plan: planOrder,
+      start: startOrder,
+      end: endOrder,
+      active,
+    });
   }
 
   return (
@@ -402,7 +456,14 @@ export default function Registration({ location }) {
                         Término
                       </th>
                       <th width="60" className="text-center">
-                        Ativa
+                        <ButtonActive onClick={changeActiveFilter}>
+                          {// eslint-disable-next-line no-nested-ternary
+                          activeFilter === 0
+                            ? 'Não Ativas'
+                            : activeFilter === 1
+                            ? 'Ativas'
+                            : 'Ambas'}
+                        </ButtonActive>
                       </th>
                       <th width="100" />
                     </tr>
