@@ -3,9 +3,9 @@ const faker = require('faker');
 
 module.exports = {
   up: queryInterface => {
-    const arr = new Array(200);
+    const arr = new Array(400);
     const students = Array.from(arr).map(() => {
-      const birthday = faker.date.between('1960-01-01', '2008-12-31');
+      const birthday = faker.date.between('1960-01-01', '2009-12-31');
 
       return {
         name: faker.name.findName(),

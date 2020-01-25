@@ -25,7 +25,7 @@ module.exports = {
     let plans = await client.query('SELECT * FROM plans');
     plans = plans.rows;
 
-    const arr = new Array(400);
+    const arr = new Array(399);
     const registrations = Array.from(arr).map((item, index) => {
       const start_date = startOfDay(
         faker.date.between('2017-05-01', new Date())
