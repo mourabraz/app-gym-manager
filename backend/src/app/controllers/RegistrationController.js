@@ -1,4 +1,5 @@
-import { addMonths, parseISO, isEqual } from 'date-fns';
+import { Op } from 'sequelize';
+import { addMonths, parseISO, isEqual, startOfDay, endOfDay } from 'date-fns';
 
 import Registration from '../models/Registration';
 import Student from '../models/Student';
@@ -17,6 +18,7 @@ class RegistrationController {
       plan = '',
       start = '',
       end = '',
+      active = 2,
     } = req.query;
 
     const order = [];
@@ -36,8 +38,40 @@ class RegistrationController {
       order.push(['student', 'name']);
     }
 
-    const data = await Registration.findAndCountAll({
+    const whereQuery = {
       where: {},
+    };
+
+    if (Number(active) === 0) {
+      whereQuery.where[Op.and] = [
+        // {
+        //   start_date: {
+        //     [Op.lt]: new Date(),
+        //   },
+        // },
+        {
+          end_date: {
+            [Op.lt]: startOfDay(new Date()),
+          },
+        },
+      ];
+    } else if (Number(active) === 1) {
+      whereQuery.where[Op.and] = [
+        {
+          start_date: {
+            [Op.lt]: endOfDay(new Date()),
+          },
+        },
+        {
+          end_date: {
+            [Op.gt]: startOfDay(new Date()),
+          },
+        },
+      ];
+    }
+
+    const data = await Registration.findAndCountAll({
+      ...whereQuery,
       include: [
         {
           model: Student,
@@ -88,7 +122,22 @@ class RegistrationController {
       student,
     });
 
-    return res.json(newRecord);
+    const savedRecord = await Registration.findByPk(newRecord.id, {
+      include: [
+        {
+          model: Student,
+          key: 'id',
+          as: 'student',
+        },
+        {
+          model: Plan,
+          key: 'id',
+          as: 'plan',
+        },
+      ],
+    });
+
+    return res.json(savedRecord);
   }
 
   async update(req, res) {

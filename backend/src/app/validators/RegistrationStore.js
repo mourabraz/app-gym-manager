@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { addMonths, parseISO } from 'date-fns';
+import { addMonths, parseISO, startOfDay } from 'date-fns';
 
 import Registration from '../models/Registration';
 import Student from '../models/Student';
@@ -12,7 +12,7 @@ export default async (req, res, next) => {
     student_id: Yup.number().required(),
     plan_id: Yup.number().required(),
     start_date: Yup.date()
-      .min(new Date())
+      .min(startOfDay(new Date()))
       .required(),
   });
 
