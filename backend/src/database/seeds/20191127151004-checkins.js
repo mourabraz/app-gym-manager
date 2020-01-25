@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const faker = require('faker');
-const { subDays } = require('date-fns');
+const { subDays, setHours } = require('date-fns');
 const { Client } = require('pg');
 
 const client = new Client({
@@ -41,11 +41,15 @@ module.exports = {
         const total = faker.random.number({ min: 2, max: 5 });
         // eslint-disable-next-line no-plusplus
         for (let i = 0; i < total; i++) {
+          const hours = faker.random.number({ min: 8, max: 22 });
           checkins.push({
             student_id: student.student_id,
-            created_at: faker.date.between(
-              subDays(new Date(), (j + 1) * 7),
-              subDays(new Date(), j * 7)
+            created_at: setHours(
+              faker.date.between(
+                subDays(new Date(), (j + 1) * 7),
+                subDays(new Date(), j * 7)
+              ),
+              hours
             ),
             updated_at: new Date(),
           });
