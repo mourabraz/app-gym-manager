@@ -24,6 +24,13 @@ module.exports = {
           created_at: new Date(),
           updated_at: new Date(),
         },
+        {
+          title: 'Ruby',
+          duration: 12,
+          price: 5900,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
       ],
       {}
     );

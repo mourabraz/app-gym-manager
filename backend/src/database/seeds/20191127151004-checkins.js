@@ -24,7 +24,11 @@ module.exports = {
     });
 
     let students = await client.query(
-      'SELECT * FROM students INNER JOIN registrations ON students.id = registrations.student_id WHERE registrations.end_date > $1',
+      `
+      SELECT * FROM students
+        INNER JOIN registrations ON students.id = registrations.student_id
+        WHERE registrations.end_date > $1
+      `,
       [subDays(new Date(), 7)]
     );
     students = students.rows;
@@ -34,7 +38,7 @@ module.exports = {
     // eslint-disable-next-line no-plusplus
     for (let j = 0; j < 5; j++) {
       students.forEach(student => {
-        const total = faker.random.number({ min: 3, max: 5 });
+        const total = faker.random.number({ min: 2, max: 5 });
         // eslint-disable-next-line no-plusplus
         for (let i = 0; i < total; i++) {
           checkins.push({

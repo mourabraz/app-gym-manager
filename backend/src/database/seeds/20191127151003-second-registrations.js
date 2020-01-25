@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const faker = require('faker');
-const { addMonths } = require('date-fns');
+const { addMonths, startOfDay, endOfDay } = require('date-fns');
 const { Client } = require('pg');
 
 const client = new Client({
@@ -27,20 +27,19 @@ module.exports = {
 
     let registrationsOld = await client.query(
       'SELECT * FROM registrations WHERE registrations.end_date < $1',
-      [new Date(2019, 5, 30)]
+      [new Date(2019, 10, 30, 0, 0, 0)]
     );
     const arr = new Array(registrationsOld.rowCount);
     registrationsOld = registrationsOld.rows;
 
     const registrations = Array.from(arr).map((item, index) => {
-      const start_date = faker.date.between(
-        registrationsOld[index].end_date,
-        new Date()
+      const start_date = startOfDay(
+        faker.date.between(registrationsOld[index].end_date, new Date())
       );
       const plan =
         plans[faker.random.number({ min: 0, max: plans.length - 1 })];
 
-      const end_date = addMonths(start_date, plan.duration);
+      const end_date = endOfDay(addMonths(start_date, plan.duration));
 
       return {
         student_id: registrationsOld[index].student_id,
