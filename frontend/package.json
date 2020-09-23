@@ -40,6 +40,7 @@
     "yup": "^0.28.0"
   },
   "scripts": {
+    "server": "serve -s build -l 3001",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
